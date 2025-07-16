@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Activity - Joiners.com</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Custom styles not easily done with Tailwind utilities, or for specific overrides */
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f0f4f8; /* Lighter, softer blue-gray background */
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+        /* Custom styles for cards and buttons */
+        .card {
+            transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+        }
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: theme('boxShadow.xl');
+        }
+        .action-button {
+            transition: all 0.3s ease;
+        }
+        .action-button:hover {
+            transform: translateY(-2px);
+            box-shadow: theme('boxShadow.md');
+        }
+        /* Style the radio/checkbox for better visibility if needed */
+        .form-group input[type="radio"],
+        .form-group input[type="checkbox"] {
+            transform: scale(1.1);
+            margin-right: 0.5em;
+        }
+    </style>
+</head>
+<body class="text-gray-800 leading-relaxed">
+       <!-- Header -->
+     <header class="bg-white shadow-lg py-4 px-6 md:px-12 flex justify-between items-center rounded-b-xl relative">
+           <div class="flex items-center">
+            <img src="joinerslogo.png" alt="Joiners.com Logo" class="h-10 w-10 mr-3">
+            <span class="text-2xl font-bold text-sky-500">Joiners.com</span>
+        </div>
+        <h1 class="text-xl md:text-3xl font-bold text-gray-700">Activity Builder</h1>
+        <a href="userhomepage.html" class="bg-sky-700 text-white px-5 py-2 rounded-full text-base font-semibold hover:bg-sky-600 transition duration-300 transform hover:scale-105 shadow-md">
+            Back to Dashboard
+        </a>
+    </header>
+    
+    <div class="container mx-auto w-11/12 max-w-4xl mt-10 bg-gradient-to-r from-amber-500 to-sky-400 p-8 rounded-xl shadow-xl card">
+        <h2 class="text-3xl font-bold text-black text-center mb-6">Create Your Next Adventure!</h2>
+        <p class="text-center text-gray-800 text-lg mb-8">
+            Easily create and share group activities, and let Joiners.com handle the cost splitting for you. Gather your friends or meet new people for unforgettable experiences without the hassle of managing payments.
+        </p>
+        <nav class="flex justify-center py-3 space-x-4">
+            <a href="#details" class="bg-white text-gray-900 px-12 py-4 rounded-full text-lg font-bold hover:bg-gray-100 transition duration-300 transform hover:scale-105 shadow-lg">
+                Create and Share Activities
+            </a>
+             <a href="#cost-share" class="bg-white text-gray-900 px-10 py-4 rounded-full text-lg font-bold hover:bg-gray-100 transition duration-300 transform hover:scale-105 shadow-lg">
+               Cost Sharing
+            </a>
+   		</nav></div>
+   <section id="details" class="py-20 px-6 md:px-12 bg-gray-50">
+        <form id="eventBuilderForm">
+            <h3 class="text-2xl font-semibold text-gray-800 mt-8 mb-4 pb-2 border-b-2 border-sky-500 inline-block">Activity Details</h3>
+            <div class="mb-6">
+                <label for="eventTitle" class="block text-gray-700 font-semibold mb-2">Activity Title:</label>
+                <input type="text" id="eventTitle" name="eventTitle" placeholder="e.g., Weekend Hiking Trip to Mount Batulao" required
+                       class="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 transition duration-200">
+            </div>
+            <div class="mb-6">
+                <label for="description" class="block text-gray-700 font-semibold mb-2">Description:</label>
+                <textarea id="description" name="description" placeholder="Provide details about your event, what participants can expect, and any special instructions." required
+                          class="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 transition duration-200 min-h-[120px] resize-y"></textarea>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                <div>
+                    <label for="eventDate" class="block text-gray-700 font-semibold mb-2">Date:</label>
+                    <input type="date" id="eventDate" name="eventDate" required
+                           class="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 transition duration-200">
+                </div>
+                <div>
+                    <label for="eventTime" class="block text-gray-700 font-semibold mb-2">Time:</label>
+                    <input type="time" id="eventTime" name="eventTime" required
+                           class="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 transition duration-200">
+                </div>
+            </div>
+            <div class="mb-6">
+                <label for="location" class="block text-gray-700 font-semibold mb-2">Location:</label>
+                <input type="text" id="location" name="location" placeholder="Address or specific meeting point (with Geo-Tagging & Map Integration)" required
+                       class="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 transition duration-200">
+            </div>
+            <div class="mb-6">
+                <label for="eventType" class="block text-gray-700 font-semibold mb-2">Activity Type/Category:</label>
+                <select id="eventType" name="eventType" required
+                        class="w-full p-3 border border-gray-300 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-green-500 transition duration-200">
+                    <option value="">Select a category</option>
+                    <option value="adventure">Adventure</option>
+                    <option value="sports">Sports</option>
+                    <option value="food-drink">Food & Drink</option>
+                    <option value="workshop">Workshop</option>
+                    <option value="culture">Culture & Arts</option>
+                    <option value="education">Education</option>
+                    <option value="wellness">Wellness</option>
+                    <option value="other">Other</option>
+                </select>
+            </div>
+            <div class="mb-6">
+                <label for="participantLimit" class="block text-gray-700 font-semibold mb-2">Participant Limit (optional):</label>
+                <input type="number" id="participantLimit" name="participantLimit" min="1" placeholder="Maximum number of joiners"
+                       class="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 transition duration-200">
+            </div>
+            <div class="mb-6">
+                <label for="privacySettings" class="block text-gray-700 font-semibold mb-2">Privacy Settings:</label>
+                <select id="privacySettings" name="privacySettings"
+                        class="w-full p-3 border border-gray-300 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-green-500 transition duration-200">
+                    <option value="public">Public Event</option>
+                    <option value="private">Private Event (Invite Only)</option>
+                </select>
+            </div> </section>
+   <section id="cost-share" class="py-20 px-6 md:px-12 bg-gray-50"></section>
+            <h3 class="text-2xl font-semibold text-gray-800 mt-10 mb-4 pb-2 border-b-2 border-sky-500 inline-block">Cost Splitting & Payments</h3>
+            <p class="text-gray-600 text-lg mb-6">
+                Joiners.com features a secure, seamless in-app payment system with automatic cost splitting.
+            </p>
+            <div class="mb-6">
+                <label for="totalCost" class="block text-gray-700 font-semibold mb-2">Total Event Cost (Php):</label>
+                <input type="number" id="totalCost" name="totalCost" min="0" step="0.01" placeholder="Overall estimated cost for the event" required
+                       class="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 transition duration-200">
+            </div>
+            <div class="bg-gray-100 p-4 rounded-lg border border-gray-200 mb-6">
+                <label class="block text-gray-700 font-semibold mb-3">Cost Splitting Method:</label>
+                <div class="flex items-center space-x-6">
+                    <div class="flex items-center">
+                        <input type="radio" id="evenSplit" name="splitMethod" value="even" checked class="form-radio text-green-600 focus:ring-green-500">
+                        <label for="evenSplit" class="ml-2 text-gray-700">Even Split</label>
+                    </div>
+                    <div class="flex items-center">
+                        <input type="radio" id="customSplit" name="splitMethod" value="custom" class="form-radio text-green-600 focus:ring-green-500">
+                        <label for="customSplit" class="ml-2 text-gray-700">Custom Split (allows for different amounts per person)</label>
+                    </div>
+                </div>
+            </div>
+            <div class="mb-6">
+                <label class="block text-gray-700 font-semibold mb-2">Payment Methods Accepted:</label>
+                <div class="flex items-center space-x-6">
+                    <div class="flex items-center">
+                        <input type="checkbox" id="creditCard" name="paymentMethods" value="creditCard" checked disabled class="form-checkbox text-green-600">
+                        <label for="creditCard" class="ml-2 text-gray-600">Credit Card</label>
+                    </div>
+                    <div class="flex items-center">
+                        <input type="checkbox" id="debitCard" name="paymentMethods" value="debitCard" checked disabled class="form-checkbox text-green-600">
+                        <label for="debitCard" class="ml-2 text-gray-600">Debit Card</label>
+                    </div>
+                    <div class="flex items-center">
+                        <input type="checkbox" id="Gcash" name="paymentMethods" value="debitCard" checked disabled class="form-checkbox text-green-600">
+                        <label for="debitCard" class="ml-2 text-gray-600">Gcash</label>
+                    </div>
+                </div>
+            </div>
+
+            <h3 class="text-2xl font-semibold text-gray-800 mt-10 mb-4 pb-2 border-b-2 border-sky-500 inline-block">Additional Features for Your Event</h3>
+            <div class="mb-6 space-y-3">
+                <div class="flex items-center">
+                    <input type="checkbox" id="itineraryBuilder" name="features" value="itineraryBuilder" checked class="form-checkbox text-green-600">
+                    <label for="itineraryBuilder" class="ml-2 text-gray-600">Itinerary Builder - for detailed activity planning</label>
+                </div>
+                <div class="flex items-center">
+                    <input type="checkbox" id="groupChat" name="features" value="groupChat" checked class="form-checkbox text-green-600">
+                    <label for="groupChat" class="ml-2 text-gray-600">Group Chat & Messaging - for real-time communication</label>
+                </div>
+                <div class="flex items-center">
+                    <input type="checkbox" id="calendarSync" name="features" value="calendarSync" checked class="form-checkbox text-green-600">
+                    <label for="calendarSync" class="ml-2 text-gray-600">Calendar Sync & Reminders - sync events with phone calendars</label>
+                </div>
+                 <div class="flex items-center">
+                    <input type="checkbox" id="geoTagging" name="features" value="geoTagging" checked class="form-checkbox text-green-600">
+                    <label for="geoTagging" class="ml-2 text-gray-600">Geo-Tagging & Map Integration - show activity locations and nearby pickup points</label>
+                </div>
+                <div class="flex items-center">
+                    <input type="checkbox" id="insuranceOption" name="features" value="insuranceOption" class="form-checkbox text-green-600">
+                    <label for="insuranceOption" class="ml-2 text-gray-600">Insurance Add-On Option - offers optional travel/sports accident insurance</label>
+                </div>
+                <div class="flex items-center">
+                    <input type="checkbox" id="verifiedHosts" name="features" value="verifiedHosts" checked disabled class="form-checkbox text-green-600">
+                    <label for="verifiedHosts" class="ml-2 text-gray-600">Verified Hosts Badge - builds trust and safety within the community</label>
+                </div>
+                <div class="flex items-center">
+                    <input type="checkbox" id="loyaltyRewards" name="features" value="loyaltyRewards" class="form-checkbox text-green-600">
+                    <label for="loyaltyRewards" class="ml-2 text-gray-600">Loyalty Rewards / Cashback - points-based system to encourage more participation</label>
+                </div>
+            </div>
+
+            <button type="submit" class="bg-sky-600 hover:bg-green-700 text-white font-bold py-3 px-6 rounded-lg shadow-md hover:shadow-lg transition duration-300 w-full text-xl mt-10 action-button">
+                Create Event
+            </button>
+        </form>
+        </section>
+    </div>
+
+    <footer class="bg-gray-900 text-white text-center py-8 mt-12 text-sm">
+        <p class="mb-1">&copy; 2025 Joiners.com. All rights reserved.</p>
+        <p>Be a Joiner now!</p>
+    </footer>
+
+    <script>
+        document.getElementById('eventBuilderForm').addEventListener('submit', function(event) {
+            event.preventDefault(); // Prevent default form submission
+
+            const eventData = {
+                title: document.getElementById('eventTitle').value,
+                description: document.getElementById('description').value,
+                date: document.getElementById('eventDate').value,
+                time: document.getElementById('eventTime').value,
+                location: document.getElementById('location').value,
+                eventType: document.getElementById('eventType').value,
+                participantLimit: document.getElementById('participantLimit').value,
+                privacySettings: document.getElementById('privacySettings').value,
+                totalCost: document.getElementById('totalCost').value,
+                splitMethod: document.querySelector('input[name="splitMethod"]:checked').value,
+                features: Array.from(document.querySelectorAll('input[name="features"]:checked')).map(cb => cb.value)
+            };
+
+            console.log('Event Data Submitted:', eventData);
+
+            // In a real application, this data would be sent to a server
+            // for processing (e.g., using fetch() API)
+
+            // For demonstration purposes:
+            alert('Event creation simulated! In a real app, this would be sent to a backend.');
+            this.reset(); // Optionally clear the form after submission
+        });
+
+        // Dynamic behavior for custom split (placeholder)
+        document.querySelectorAll('input[name="splitMethod"]').forEach(radio => {
+            radio.addEventListener('change', function() {
+                if (this.value === 'custom') {
+                    console.log('Custom split selected. A real application would now show fields to define custom amounts per person.');
+                    // Example: You might dynamically add input fields here
+                } else {
+                    console.log('Even split selected.');
+                    // Example: You might remove custom input fields here
+                }
+            });
+        });
+
+        // Set min date for eventDate to today or future
+        const today = new Date();
+        const yyyy = today.getFullYear();
+        let mm = today.getMonth() + 1; // Months start at 0!
+        let dd = today.getDate();
+
+        if (dd < 10) dd = '0' + dd;
+        if (mm < 10) mm = '0' + mm;
+
+        const minDate = yyyy + '-' + mm + '-' + dd;
+        document.getElementById('eventDate').setAttribute('min', minDate);
+    </script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const logoutBtn = document.getElementById('logoutBtn');
+
+            logoutBtn.addEventListener('click', () => {
+                // Simulate logout and redirect back to the main page
+                // In a real app, this would clear session data //
+                window.location.href = 'index.html'; // Assuming this is the path to your main page//
+            });
+        });
+    </script>
+</body>
+</html>

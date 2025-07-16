@@ -1,0 +1,488 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Joiners.com - User Profile</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f0f4f8; /* Lighter, softer blue-gray background */
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+        /* Custom styles for cards and buttons */
+        .card {
+            transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+        }
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: theme('boxShadow.xl');
+        }
+        .action-button {
+            transition: all 0.3s ease;
+        }
+        .action-button:hover {
+            transform: translateY(-2px);
+            box-shadow: theme('boxShadow.md');
+        }
+
+        /* Profile specific styles */
+        .profile-header {
+            background: linear-gradient(to right, #f58e0b, #38bdf8); /* Teal gradient */
+            color: white;
+            padding: 3rem 2rem;
+            border-radius: 1rem;
+            text-align: center;
+            box-shadow: theme('boxShadow.xl');
+            margin-bottom: 2rem;
+        }
+
+        .profile-avatar {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            border: 4px solid white;
+            object-fit: cover;
+            margin: 0 auto 1rem;
+            box-shadow: theme('boxShadow.md');
+        }
+
+        .photo-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            gap: 1rem;
+        }
+
+        .photo-item {
+            position: relative;
+            padding-bottom: 100%; /* Creates a square container */
+            overflow: hidden;
+            border-radius: 0.75rem;
+            box-shadow: theme('boxShadow.md');
+            cursor: pointer;
+            transition: transform 0.2s ease;
+        }
+
+        .photo-item:hover {
+            transform: scale(1.03);
+        }
+
+        .photo-item img {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 0.75rem;
+        }
+
+        .upload-area {
+            border: 2px dashed #cbd5e1; /* slate-300 */
+            border-radius: 0.75rem;
+            padding: 2rem;
+            text-align: center;
+            cursor: pointer;
+            transition: background-color 0.2s ease;
+        }
+
+        .upload-area:hover {
+            background-color: #f8fafc; /* slate-50 */
+        }
+
+        /* Inbox Chat Window Styles */
+        .inbox-chat-window {
+            background-color: white;
+            border-radius: 10px;
+            width: 100%;
+            height: 400px; /* Fixed height for chat area */
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            border: 1px solid #e2e8f0; /* subtle border */
+        }
+
+        .inbox-chat-header {
+            background-color: #008080;
+            color: white;
+            padding: 10px 15px;
+            border-top-left-radius: 10px;
+            border-top-right-radius: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .inbox-chat-messages {
+            flex-grow: 1;
+            padding: 15px;
+            overflow-y: auto;
+            background-color: #f9f9f9;
+        }
+
+        .inbox-chat-message {
+            margin-bottom: 10px;
+            display: flex;
+        }
+
+        .inbox-chat-message.sent {
+            justify-content: flex-end;
+        }
+
+        .inbox-chat-message.received {
+            justify-content: flex-start;
+        }
+
+        .inbox-chat-message-content {
+            padding: 8px 12px;
+            border-radius: 15px;
+            max-width: 75%;
+            word-wrap: break-word; /* For older browsers */
+            overflow-wrap: break-word; /* Standard property */
+            box-sizing: border-box; /* Include padding in width calculation */
+        }
+
+        .inbox-chat-message.sent .inbox-chat-message-content {
+            background-color: #DCF8C6; /* Light green for sent messages */
+            color: #333;
+        }
+
+        .inbox-chat-message.received .inbox-chat-message-content {
+            background-color: #E2E2E2; /* Light gray for received messages */
+            color: #333;
+        }
+
+        .inbox-chat-input {
+            padding: 10px 15px;
+            border-top: 1px solid #eee;
+            display: flex;
+            gap: 10px;
+        }
+
+        .inbox-chat-input input {
+            flex-grow: 1;
+            border: 1px solid #ddd;
+            border-radius: 20px;
+            padding: 8px 15px;
+            outline: none;
+        }
+
+        .inbox-chat-input button {
+            background-color: #1E90FF;
+            color: white;
+            border-radius: 50%;
+            width: 35px;
+            height: 35px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            border: none;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .inbox-chat-input button:hover {
+            background-color: #1C86EE;
+        }
+    </style>
+</head>
+<body class="text-gray-800">
+
+    <header class="bg-white shadow-lg py-4 px-6 md:px-12 flex justify-between items-center rounded-b-xl">
+        <div class="flex items-center">
+            <img src="joinerslogo.png" alt="Joiners.com Logo" class="h-10 w-10 mr-3">
+            <span class="text-2xl font-bold text-sky-500">Joiners.com</span>
+        </div>
+        <h1 class="text-xl md:text-3xl font-bold text-gray-700">User Profile</h1>
+         <a href="userhomepage.html" class="bg-amber-700 text-white px-5 py-2 rounded-full text-base font-semibold hover:bg-amber-600 transition duration-300 transform hover:scale-105 shadow-md">
+            Back to Dashboard
+        </a>
+    </header>
+
+    <main class="flex-grow container mx-auto p-6 md:p-10">
+        <section class="profile-header">
+            <img src="images/Profile.jpg" alt="User Avatar" class="profile-avatar">
+            <h2 class="text-black font-extrabold mb-2">Juan Carlo David</h2>
+            <p class="text-gray-800 opacity-90">An enthusiastic explorer of events and activities!</p>
+            <div class="mt-4 flex justify-center space-x-4">
+                <span class="bg-white text-amber-700 text-sm font-semibold px-3 py-1 rounded-full shadow-sm">Joined: January 2027</span>
+                <span class="bg-white text-amber-700 text-sm font-semibold px-3 py-1 rounded-full shadow-sm">Events Attended: 12</span>
+            </div>
+        </section>
+
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-8">
+            <div class="lg:col-span-1 bg-white p-6 rounded-xl shadow-lg border border-gray-200 card">
+                <h3 class="text-xl font-bold text-amber-700 mb-6 flex items-center">
+                    <svg class="w-6 h-6 mr-2 text-amber-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+                    My Inbox
+                </h3>
+                <div id="inboxThreadList" class="space-y-4">
+                    <div class="p-3 bg-blue-50 rounded-lg flex items-center justify-between cursor-pointer message-thread" data-chat-id="sam">
+                        <div class="flex-1 min-w-0">
+                            <p class="font-semibold text-gray-900">Sam <span class="text-sm text-gray-500 font-normal ml-2">1hr ago</span></p>
+                            <p class="text-sm text-gray-700 truncate">Saya nyo kasama. pwede mag join ulit sa next trip?</p>
+                        </div>
+                        <span class="text-blue-600 text-sm">Open</span>
+                    </div>
+                    <div class="p-3 bg-gray-50 rounded-lg flex items-center justify-between cursor-pointer message-thread" data-chat-id="sarah">
+                        <div class="flex-1 min-w-0">
+                            <p class="font-semibold text-gray-900">Alex <span class="text-sm text-gray-500 font-normal ml-2">5m ago</span></p>
+                            <p class="text-sm text-gray-700 truncate">Hey, about the hiking trip next week, are you still planning to go?</p>
+                        </div>
+                        <span class="text-blue-600 text-sm">Open</span>
+                    </div>
+                    <div class="p-3 bg-gray-50 rounded-lg flex items-center justify-between cursor-pointer message-thread" data-chat-id="admin">
+                        <div class="flex-1 min-w-0">
+                            <p class="font-semibold text-gray-900">Event Admin <span class="text-sm text-gray-500 font-normal ml-2">1hr ago</span></p>
+                            <p class="text-sm text-gray-700 truncate">Your registration for "City Food Tour" is confirmed! Details sent to your email.</p>
+                        </div>
+                        <span class="text-blue-600 text-sm">Open</span>
+                    </div>
+                    <div class="p-3 bg-gray-50 rounded-lg flex items-center justify-between cursor-pointer message-thread" data-chat-id="mark">
+                        <div class="flex-1 min-w-0">
+                            <p class="font-semibold text-gray-900">Kris <span class="text-sm text-gray-500 font-normal ml-2">yesterday</span></p>
+                            <p class="text-sm text-gray-700 truncate">Thanks for sharing the photos from the concert! They turned out great.</p>
+                        </div>
+                        <span class="text-blue-600 text-sm">Open</span>
+                    </div>
+                </div>
+
+                <div id="inboxChatWindow" class="inbox-chat-window mt-6 hidden">
+                    <div class="inbox-chat-header">
+                        <button id="backToInbox" class="text-white text-xl leading-none mr-2">&larr;</button>
+                        <h4 id="inboxChatName" class="font-semibold"></h4>
+                        <button id="closeInboxChat" class="text-white text-xl leading-none ml-auto">&times;</button>
+                    </div>
+                    <div class="inbox-chat-messages" id="inboxChatMessages">
+                        </div>
+                    <div class="inbox-chat-input">
+                        <input type="text" id="inboxChatInput" placeholder="Type your message...">
+                        <button id="sendInboxMessageButton">➤</button>
+                    </div>
+                </div>
+                <p id="noNewMessages" class="text-center text-gray-500 text-sm mt-4 hidden">No new messages. <a href="#" class="text-sky-600 hover:underline">View all messages</a></p>
+            </div>
+
+            <div class="lg:col-span-2 bg-white p-6 rounded-xl shadow-lg border border-gray-200 card">
+                <h3 class="text-xl font-bold text-amber-700 mb-6 flex items-center">
+                    <svg class="w-6 h-6 mr-2 text-amber-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V8a2 2 0 00-2-2h-5m-4 0V5a2 2 0 114 0v1m-4 0H9m7 0h-1.5M17 10h.01M21 10h.01M12 10h.01M7 10h.01M12 14h.01M7 14h.01M17 14h.01M21 14h.01M12 18h.01M7 18h.01M17 18h.01"></path></svg>
+                    About Me
+                </h3>
+                <p class="text-gray-700 mb-4">
+                    Passionate about connecting with new people and discovering unique experiences. I love photography, outdoor adventures, and anything that involves good company and great food! Let's explore together!
+                </p>
+                <h4 class="font-semibold text-gray-800 mb-2">Interests:</h4>
+                <div class="flex flex-wrap gap-2 mb-4">
+                    <span class="bg-sky-100 text-sky-800 text-xs font-medium px-2.5 py-0.5 rounded-full">Hiking</span>
+                    <span class="bg-green-100 text-green-800 text-xs font-medium px-2.5 py-0.5 rounded-full">Photography</span>
+                    <span class="bg-amber-100 text-amber-800 text-xs font-medium px-2.5 py-0.5 rounded-full">Food Trips</span>
+                    <span class="bg-purple-100 text-purple-800 text-xs font-medium px-2.5 py-0.5 rounded-full">Concerts</span>
+                </div>
+                <h4 class="font-semibold text-gray-800 mb-2">Connect:</h4>
+                <div class="flex space-x-4">
+                    <a href="#" class="text-blue-600 hover:text-blue-800"><i class="fab fa-facebook-square fa-2x"></i></a>
+                    <a href="#" class="text-sky-600 hover:text-sky-800"><i class="fab fa-twitter-square fa-2x"></i></a>
+                    <a href="#" class="text-pink-600 hover:text-pink-800"><i class="fab fa-instagram-square fa-2x"></i></a>
+                </div>
+            </div>
+        </div>
+
+        <section class="bg-white p-6 rounded-xl shadow-lg border border-gray-200 card mb-8">
+            <h3 class="text-xl font-bold text-amber-700 mb-6 flex items-center">
+                <svg class="w-6 h-6 mr-2 text-amber-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+                My Activity Photos
+            </h3>
+            <div class="photo-grid">
+                <div class="photo-item">
+                    <img src="images/Hike1.jpg" alt="Hiking Trip">
+                </div>
+                <div class="photo-item">
+                    <img src="images/Hike2.jpg" alt="Hiking Trip">
+                </div>
+                <div class="photo-item">
+                    <img src="images/Beach1.jpg" alt="Beach Trip">
+                </div>
+                <div class="photo-item">
+                    <img src="images/Beach2.jpg" alt="Beach Trip">
+                </div>
+                <div class="photo-item">
+                    <img src="images/Vball.jpg" alt="Beach Trip">
+                </div>
+                <div class="photo-item upload-area">
+                    <label for="photoUpload" class="cursor-pointer">
+                        <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 0115.9 6h1.1a2 2 0 012 2v13a2 2 0 01-2 2H7a2 2 0 01-2-2V7a2 2 0 012-2z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 0l-3-3m3 3l3-3"></path></svg>
+                        <span class="mt-2 block text-sm font-medium text-gray-900">Upload Photo</span>
+                        <p class="text-xs text-gray-500">PNG, JPG, GIF up to 5MB</p>
+                    </label>
+                    <input id="photoUpload" type="file" class="hidden" accept="image/*">
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="bg-gray-800 text-gray-300 py-6 px-6 md:px-12 rounded-t-xl mt-auto">
+        <div class="max-w-6xl mx-auto text-center">
+            <p>&copy; 2025 Joiners.com. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const logoutBtn = document.getElementById('logoutBtn'); // Changed to 'Back to Dashboard' but ID is still logoutBtn in HTML
+            const photoUploadInput = document.getElementById('photoUpload');
+            const photoGrid = document.querySelector('.photo-grid');
+
+            // Inbox Elements
+            const inboxThreadList = document.getElementById('inboxThreadList');
+            const inboxChatWindow = document.getElementById('inboxChatWindow');
+            const inboxChatName = document.getElementById('inboxChatName');
+            const inboxChatMessages = document.getElementById('inboxChatMessages');
+            const inboxChatInput = document.getElementById('inboxChatInput');
+            const sendInboxMessageButton = document.getElementById('sendInboxMessageButton');
+            const backToInboxButton = document.getElementById('backToInbox');
+            const closeInboxChatButton = document.getElementById('closeInboxChat');
+            const noNewMessages = document.getElementById('noNewMessages');
+
+            // Sample chat data (in a real app, this would come from a backend)
+            const chatData = {
+                sam: [
+                    { type: 'received', content: 'Hi, nice to get to know you. salamat sa pag share ng food.' },
+                    { type: 'sent', content: 'Hey! wala yun. nagdala talaga ako ng extra just in case.' },
+                    { type: 'received', content: 'Saya nyo kasama. pwede mag join ulit sa next trip?' }
+                ],
+                sarah: [
+                    { type: 'received', content: 'Hey, about the hiking trip next week, are you still planning to go?' },
+                    { type: 'sent', content: 'Yes, absolutely! Super excited for it. Did you check the weather forecast?' },
+                    { type: 'received', content: 'Just did! Looks like it will be sunny. Should be a great day for hiking.' }
+                ]
+                ,
+                admin: [
+                    { type: 'received', content: 'Your registration for "City Food Tour" is confirmed! Details sent to your email.' },
+                    { type: 'sent', content: 'Awesome, thanks for the update!' }
+                ],
+                mark: [
+                    { type: 'received', content: 'Thanks for sharing the photos from the concert! They turned out great.' },
+                    { type: 'sent', content: 'No problem, glad you liked them! It was a fun night.' }
+                ]
+            };
+
+            // Initially hide the chat window and ensure noNewMessages is hidden if there are threads
+            inboxChatWindow.classList.add('hidden');
+            if (inboxThreadList.children.length > 0) {
+                noNewMessages.classList.add('hidden');
+            }
+
+
+            // The 'Back to Dashboard' button functionality
+            // Note: The HTML element has an href, so this JS might not be strictly needed unless you want
+            // to add more JS-specific logout logic before redirecting.
+            // If you keep this, ensure its ID matches the HTML element you want to trigger it.
+            // Currently, the HTML 'Back to Dashboard' button has no ID. Let's make it more robust.
+            const backToDashboardBtn = document.querySelector('a[href="userhomepage.html"]');
+            if (backToDashboardBtn) {
+                backToDashboardBtn.addEventListener('click', (event) => {
+                    // event.preventDefault(); // Uncomment if you want to prevent default navigation and add custom logic first
+                    console.log('Navigating back to dashboard...');
+                    // Additional logout/session clear logic could go here if needed.
+                    // The href will handle the navigation by default.
+                });
+            }
+
+
+            // Photo upload functionality (client-side preview)
+            photoUploadInput.addEventListener('change', (event) => {
+                const files = event.target.files;
+                if (files.length > 0) {
+                    const file = files[0];
+                    const reader = new FileReader();
+
+                    reader.onload = (e) => {
+                        const newPhotoItem = document.createElement('div');
+                        newPhotoItem.classList.add('photo-item');
+                        newPhotoItem.innerHTML = `<img src="${e.target.result}" alt="Uploaded Photo">`;
+                        // Insert new photo before the upload area
+                        photoGrid.insertBefore(newPhotoItem, photoGrid.querySelector('.upload-area'));
+                    };
+                    reader.readAsDataURL(file);
+                }
+            });
+
+            // This part is for an "Edit Profile" link.
+            // It seems like it's a placeholder from a previous iteration or a general script.
+            // Your current page is already a profile page, so this specific part might not be strictly necessary,
+            // or it refers to a link on *another* page that directs *to* this profile page.
+            const editProfileLink = document.querySelector('a[href="#"]');
+            if (editProfileLink && editProfileLink.textContent.includes('Edit Profile')) {
+                editProfileLink.href = 'profile.html';
+            }
+
+            // Inbox message thread click handler
+            inboxThreadList.addEventListener('click', (event) => {
+                const thread = event.target.closest('.message-thread');
+                if (thread) {
+                    const chatId = thread.dataset.chatId;
+                    // Get the sender's name from the first part of the text in the .font-semibold span
+                    const senderName = thread.querySelector('.font-semibold').textContent.split(' ')[0];
+
+                    // Hide thread list and show chat window
+                    inboxThreadList.classList.add('hidden');
+                    inboxChatWindow.classList.remove('hidden');
+                    // Keep noNewMessages hidden when a chat is open
+                    noNewMessages.classList.add('hidden');
+
+                    // Set chat header name
+                    inboxChatName.textContent = senderName;
+
+                    // Load messages for the selected chat
+                    inboxChatMessages.innerHTML = ''; // Clear previous messages
+                    if (chatData[chatId]) {
+                        chatData[chatId].forEach(msg => {
+                            const messageElement = document.createElement('div');
+                            messageElement.classList.add('inbox-chat-message', msg.type);
+                            messageElement.innerHTML = `<div class="inbox-chat-message-content">${msg.content}</div>`;
+                            inboxChatMessages.appendChild(messageElement);
+                        });
+                    }
+                    inboxChatMessages.scrollTop = inboxChatMessages.scrollHeight; // Scroll to bottom
+                }
+            });
+
+            // Back to inbox list button
+            backToInboxButton.addEventListener('click', () => {
+                inboxChatWindow.classList.add('hidden');
+                inboxThreadList.classList.remove('hidden');
+                // We do NOT show noNewMessages here, as the threads are now visible.
+            });
+
+            // Close inbox chat button (closes the chat window and returns to thread list)
+            closeInboxChatButton.addEventListener('click', () => {
+                inboxChatWindow.classList.add('hidden');
+                inboxThreadList.classList.remove('hidden');
+                // We do NOT show noNewMessages here, as the threads are now visible.
+            });
+
+            // Send message functionality for integrated inbox chat
+            sendInboxMessageButton.addEventListener('click', () => {
+                const messageText = inboxChatInput.value.trim();
+                if (messageText !== '') {
+                    const messageElement = document.createElement('div');
+                    messageElement.classList.add('inbox-chat-message', 'sent');
+                    messageElement.innerHTML = `<div class="inbox-chat-message-content">${messageText}</div>`;
+                    inboxChatMessages.appendChild(messageElement);
+                    inboxChatInput.value = '';
+                    inboxChatMessages.scrollTop = inboxChatMessages.scrollHeight; // Scroll to bottom
+                }
+            });
+
+            inboxChatInput.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') {
+                    sendInboxMessageButton.click();
+                }
+            });
+        });
+    </script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</body>
+</html>

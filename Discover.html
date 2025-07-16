@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Discover Activities - Joiners.com</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f0f4f8; /* Lighter, softer blue-gray background */
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+        .activity-card {
+            transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+        }
+        .activity-card:hover {
+            transform: translateY(-5px);
+            box-shadow: theme('boxShadow.xl');
+        }
+        .filter-button {
+            transition: all 0.2s ease;
+        }
+        .filter-button:hover {
+            background-color: theme('colors.green.600');
+            color: white;
+        }
+        .filter-button.active {
+            background-color: theme('colors.green.700');
+            color: white;
+            font-weight: 600;
+        }
+    </style>
+</head>
+<body class="text-gray-800">
+
+    <header class="bg-white shadow-lg py-4 px-6 md:px-12 flex justify-between items-center rounded-b-xl">
+           <div class="flex items-center">
+            <img src="joinerslogo.png" alt="Joiners.com Logo" class="h-10 w-10 mr-3">
+            <span class="text-2xl font-bold text-sky-500">Joiners.com</span>
+        </div>
+        <h1 class="text-xl md:text-3xl font-bold text-gray-700">Discover Activities</h1>
+        <a href="userhomepage.html" class="bg-green-800 text-white px-5 py-2 rounded-full text-base font-semibold hover:bg-sky-600 transition duration-300 transform hover:scale-105 shadow-md">
+            Back to Dashboard
+        </a>
+    </header>
+
+    <main class="flex-grow container mx-auto p-6 md:p-10">
+        <div class="bg-gradient-to-r from-amber-500 to-sky-400 text-black p-8 md:p-10 rounded-xl shadow-lg mb-8 text-center">
+            <h2 class="text-3xl md:text-5xl font-extrabold mb-3">Find Your Next Adventure!</h2>
+            <p class="text-lg md:text-xl opacity-90">Explore a world of events, meet new people, and make memories.</p>
+        </div>
+
+        <div class="bg-white p-6 rounded-xl shadow-lg mb-8">
+            <div class="flex flex-col md:flex-row items-center justify-between mb-6">
+                <input type="text" id="activitySearch" placeholder="Search activities..."
+                       class="w-full md:w-2/3 p-3 border border-gray-300 rounded-full focus:outline-none focus:ring-2 focus:ring-sky-500 mb-4 md:mb-0 md:mr-4">
+                <button class="bg-green-600 text-white px-6 py-3 rounded-full text-base font-semibold hover:bg-green-700 transition duration-300 shadow-md">
+                    Search
+                </button>
+            </div>
+
+            <div class="flex flex-wrap gap-3 justify-center">
+                <button class="filter-button bg-gray-200 text-gray-800 px-4 py-2 rounded-full text-sm font-medium active" data-category="all">All Activities</button>
+                <button class="filter-button bg-gray-200 text-gray-800 px-4 py-2 rounded-full text-sm font-medium" data-category="outdoors">Outdoors</button>
+                <button class="filter-button bg-gray-200 text-gray-800 px-4 py-2 rounded-full text-sm font-medium" data-category="sports">Sports</button>
+                <button class="filter-button bg-gray-200 text-gray-800 px-4 py-2 rounded-full text-sm font-medium" data-category="arts">Arts & Culture</button>
+                <button class="filter-button bg-gray-200 text-gray-800 px-4 py-2 rounded-full text-sm font-medium" data-category="social">Social</button>
+                <button class="filter-button bg-gray-200 text-gray-800 px-4 py-2 rounded-full text-sm font-medium" data-category="community">Community</button>
+            </div>
+        </div>
+
+        <div id="activitiesGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+
+            <div class="activity-card bg-white rounded-xl shadow-lg border border-gray-200 overflow-hidden" data-category="outdoors">
+                <img src="Pulag.jpeg" alt="Mount Pulag Hiking" class="w-full h-48 object-cover">
+                <div class="p-6">
+                    <h4 class="text-xl font-bold text-sky-700 mb-2">Mount Pulag Summit Trek</h4>
+                    <p class="text-gray-600 mb-4 text-sm">Conquer Luzon's highest peak and witness the majestic sea of clouds at sunrise.</p>
+                    <div class="flex items-center text-gray-500 text-sm mb-3">
+                        <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+                        Sat, Aug 3, 12:00 AM (Overnight)
+                    </div>
+                    <div class="flex items-center text-gray-500 text-sm mb-4">
+                        <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+                        Benguet, Cordillera Administrative Region
+                    </div>
+                    <button class="w-full bg-green-600 text-white px-5 py-2 rounded-full font-semibold hover:bg-green-700 transition duration-300">
+                        View Details
+                    </button>
+                </div>
+            </div>
+
+            <div class="activity-card bg-white rounded-xl shadow-lg border border-gray-200 overflow-hidden" data-category="sports">
+                <img src="Bad.jpeg" alt="Badminton Game" class="w-full h-48 object-cover">
+                <div class="p-6">
+                    <h4 class="text-xl font-bold text-sky-700 mb-2">Friendly Badminton Doubles Match</h4>
+                    <p class="text-gray-600 mb-4 text-sm">Join us for a fun and competitive badminton session. All skill levels welcome!</p>
+                    <div class="flex items-center text-gray-500 text-sm mb-3">
+                        <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+                        Sun, Aug 11, 4:00 PM
+                    </div>
+                    <div class="flex items-center text-gray-500 text-sm mb-4">
+                        <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+                        PowerPlay Sports Center, Pasig
+                    </div>
+                    <button class="w-full bg-green-600 text-white px-5 py-2 rounded-full font-semibold hover:bg-green-700 transition duration-300">
+                        View Details
+                    </button>
+                </div>
+            </div>
+
+            <div class="activity-card bg-white rounded-xl shadow-lg border border-gray-200 overflow-hidden" data-category="social">
+                <img src="Club.jpeg" alt="Revel Club Party" class="w-full h-48 object-cover">
+                <div class="p-6">
+                    <h4 class="text-xl font-bold text-sky-700 mb-2">Revel at The Palace Club Night</h4>
+                    <p class="text-gray-600 mb-4 text-sm">Dance the night away with great music and a vibrant atmosphere at one of Manila's premier clubs.</p>
+                    <div class="flex items-center text-gray-500 text-sm mb-3">
+                        <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+                        Fri, Aug 16, 10:00 PM
+                    </div>
+                    <div class="flex items-center text-gray-500 text-sm mb-4">
+                        <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+                        Revel at The Palace, BGC, Taguig
+                    </div>
+                    <button class="w-full bg-green-600 text-white px-5 py-2 rounded-full font-semibold hover:bg-green-700 transition duration-300">
+                        View Details
+                    </button>
+                </div>
+            </div>
+
+            <div class="activity-card bg-white rounded-xl shadow-lg border border-gray-200 overflow-hidden" data-category="arts">
+                <img src="Cosplay.jpeg" alt="Cosplay Event" class="w-full h-48 object-cover">
+                <div class="p-6">
+                    <h4 class="text-xl font-bold text-sky-700 mb-2">Philippine Cosplay Convention</h4>
+                    <p class="text-gray-600 mb-4 text-sm">Immerse yourself in the world of anime, manga, and gaming. Showcase your costumes or simply enjoy the spectacle!</p>
+                    <div class="flex items-center text-gray-500 text-sm mb-3">
+                        <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+                        Sat, Aug 24, 10:00 AM
+                    </div>
+                    <div class="flex items-center text-gray-500 text-sm mb-4">
+                        <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+                        SMX Convention Center, Pasay
+                    </div>
+                    <button class="w-full bg-green-600 text-white px-5 py-2 rounded-full font-semibold hover:bg-green-700 transition duration-300">
+                        View Details
+                    </button>
+                </div>
+            </div>
+
+            <div class="activity-card bg-white rounded-xl shadow-lg border border-gray-200 overflow-hidden" data-category="community">
+                <img src="Bahay.jpeg" alt="Bahay Kalinga Volunteers" class="w-full h-48 object-cover">
+                <div class="p-6">
+                    <h4 class="text-xl font-bold text-sky-700 mb-2">Bahay Kalinga Volunteer Day</h4>
+                    <p class="text-gray-600 mb-4 text-sm">Dedicate your time to helping children at Bahay Kalinga. Activities include storytelling, games, and meal assistance.</p>
+                    <div class="flex items-center text-gray-500 text-sm mb-3">
+                        <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+                        Sun, Sep 1, 9:00 AM
+                    </div>
+                    <div class="flex items-center text-gray-500 text-sm mb-4">
+                        <svg class="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path><path d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+                        Bahay Kalinga Orphanage, Quezon City
+                    </div>
+                    <button class="w-full bg-green-600 text-white px-5 py-2 rounded-full font-semibold hover:bg-green-700 transition duration-300">
+                        Sign Up to Volunteer
+                    </button>
+                </div>
+            </div>
+
+            <div class="activity-card bg-white rounded-xl shadow-lg border border-gray-200 overflow-hidden" data-category="outdoors">
+                <img src="Yoga.jpeg" alt="Yoga in the Park" class="w-full h-48 object-cover">
+                <div class="p-6">
+                    <h4 class="text-xl font-bold text-sky-700 mb-2">Morning Yoga in the Park</h4>
+                    <p class="text-gray-600 mb-4 text-sm">Start your weekend with a refreshing outdoor yoga session. All levels welcome!</p>
+                    <div class="flex items-center text-gray-500 text-sm mb-3">
+                        <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+                        Sat, Sep 14, 7:00 AM
+                    </div>
+                    <div class="flex items-center text-gray-500 text-sm mb-4">
+                        <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+                        Ayala Triangle Gardens, Makati
+                    </div>
+                    <button class="w-full bg-green-600 text-white px-5 py-2 rounded-full font-semibold hover:bg-green-700 transition duration-300">
+                        View Details
+                    </button>
+                </div>
+            </div>
+
+            <div class="activity-card bg-white rounded-xl shadow-lg border border-gray-200 overflow-hidden" data-category="arts">
+                <img src="Quiapo.jpeg" alt="Photography Walk" class="w-full h-48 object-cover">
+                <div class="p-6">
+                    <h4 class="text-xl font-bold text-sky-700 mb-2">Street Photography Workshop: Quiapo</h4>
+                    <p class="text-gray-600 mb-4 text-sm">Capture the vibrant street life and historical charm of Quiapo with professional guidance.</p>
+                    <div class="flex items-center text-gray-500 text-sm mb-3">
+                        <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+                        Sun, Sep 22, 9:00 AM
+                    </div>
+                    <div class="flex items-center text-gray-500 text-sm mb-4">
+                        <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+                        Quiapo Church Area, Manila
+                    </div>
+                    <button class="w-full bg-green-600 text-white px-5 py-2 rounded-full font-semibold hover:bg-green-700 transition duration-300">
+                        View Details
+                    </button>
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+    <footer class="bg-gray-800 text-gray-300 py-6 px-6 md:px-12 rounded-t-xl mt-auto">
+        <div class="max-w-6xl mx-auto text-center">
+            <p>&copy; 2025 Joiners.com. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const filterButtons = document.querySelectorAll('.filter-button');
+            const activities = document.querySelectorAll('.activity-card');
+            const activitySearch = document.getElementById('activitySearch');
+
+            filterButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    filterButtons.forEach(btn => btn.classList.remove('active'));
+                    button.classList.add('active');
+                    const category = button.dataset.category;
+                    filterActivities(category, activitySearch.value);
+                });
+            });
+
+            activitySearch.addEventListener('keyup', () => {
+                const activeCategory = document.querySelector('.filter-button.active').dataset.category;
+                filterActivities(activeCategory, activitySearch.value);
+            });
+
+            function filterActivities(category, searchTerm) {
+                const lowerCaseSearchTerm = searchTerm.toLowerCase();
+
+                activities.forEach(activity => {
+                    const activityCategory = activity.dataset.category;
+                    const activityTitle = activity.querySelector('h4').textContent.toLowerCase();
+                    const activityDescription = activity.querySelector('p:nth-of-type(1)').textContent.toLowerCase();
+
+                    const categoryMatch = (category === 'all' || activityCategory === category);
+                    const searchMatch = (activityTitle.includes(lowerCaseSearchTerm) || activityDescription.includes(lowerCaseSearchTerm));
+
+                    if (categoryMatch && searchMatch) {
+                        activity.style.display = 'block';
+                    } else {
+                        activity.style.display = 'none';
+                    }
+                });
+            }
+        });
+    </script>
+</body>
+</html>

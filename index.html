@@ -1,0 +1,631 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Joiners.com - Share the Fun, Split the Bill</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Custom font for the entire page */
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f0f4f8; /* Softer light blue-gray background */
+            line-height: 1.6; /* Improved line height for readability */
+        }
+        /* Inter font import from Google Fonts */
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
+        /* Message box styling */
+        .message-box {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            padding: 1rem 2rem;
+            border-radius: 0.5rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s ease-in-out, visibility 0.3s ease-in-out;
+        }
+        .message-box.show {
+            opacity: 1;
+            visibility: visible;
+        }
+        .message-box.error {
+            background-color: #fef2f2;
+            color: #ef4444;
+            border: 1px solid #ef4444;
+        }
+        .message-box.success {
+            background-color: #ecfdf5;
+            color: #10b981;
+            border: 1px solid #10b981;
+        }
+
+        /* Modal specific styles */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 999;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s ease-in-out, visibility 0.3s ease-in-out;
+        }
+        .modal-overlay.show {
+            opacity: 1;
+            visibility: visible;
+        }
+        .modal-content {
+            background-color: white;
+            padding: 2.5rem;
+            border-radius: 1rem;
+            box-shadow: 0 10px 15px rgba(0, 0, 0, 0.2);
+            width: 90%;
+            max-width: 450px;
+            position: relative;
+            transform: translateY(-20px);
+            opacity: 0;
+            transition: transform 0.3s ease-out, opacity 0.3s ease-out;
+        }
+        .modal-overlay.show .modal-content {
+            transform: translateY(0);
+            opacity: 1;
+        }
+
+        /* General element animations */
+        .animate-fade-in-down {
+            animation: fadeInDown 0.8s ease-out forwards;
+        }
+        .animate-fade-in-up {
+            animation: fadeInUp 0.8s ease-out forwards;
+        }
+        .animate-slide-in-left {
+            animation: slideInLeft 0.8s ease-out forwards;
+        }
+        /* Removed .animate-slide-in-right from here as it's now controlled by JS for carousel */
+        .animate-scale-in {
+            animation: scaleIn 0.6s ease-out forwards;
+        }
+
+        @keyframes fadeInDown {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes slideInLeft {
+            from { opacity: 0; transform: translateX(-50px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+        /* Removed slideInRight keyframes as carousel uses different transform */
+        @keyframes scaleIn {
+            from { opacity: 0; transform: scale(0.9); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        /* Card hover effect */
+        .feature-card, .advantage-card, .audience-card {
+            transition: all 0.3s ease-in-out;
+            border: 1px solid theme('colors.gray.200'); /* Subtle border */
+        }
+        .feature-card:hover, .advantage-card:hover, .audience-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1); /* More pronounced shadow */
+        }
+
+        /* Mobile menu specific styles */
+        .mobile-menu {
+            position: absolute;
+            top: 100%; /* Position right below the header */
+            left: 0;
+            width: 100%;
+            background-color: white;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+            padding: 1rem 0;
+            z-index: 50;
+            display: none; /* Hidden by default */
+        }
+        .mobile-menu.active {
+            display: block; /* Show when active */
+        }
+
+        /* Added for image carousel */
+        .hidden {
+            display: none;
+        }
+
+        /* Image Carousel Animations */
+        /* Initial state for images off-screen to the right */
+        .slide-in-from-right {
+            transform: translateX(100%);
+        }
+        /* State for the active image, or image sliding into view */
+        .slide-in-right { /* Renamed from original .animate-slide-in-right to reflect its role in carousel */
+            transform: translateX(0%);
+        }
+        /* State for images sliding out to the left */
+        .slide-out-left {
+            transform: translateX(-100%);
+        }
+    </style>
+</head>
+<body class="text-gray-800">
+
+    <header class="bg-white shadow-lg py-4 px-6 md:px-12 flex justify-between items-center rounded-b-xl relative">
+        <div class="flex items-center">
+            <img src="joinerslogo.png" alt="Joiners.com Logo" class="h-10 w-10 mr-3">
+            <span class="text-2xl font-bold text-sky-500">Joiners.com</span>
+        </div>
+        <nav class="hidden md:block">
+            <ul class="flex space-x-6 items-center">
+                <li><a href="#features" class="text-gray-600 hover:text-sky-600 font-medium transition duration-300">Features</a></li>
+                <li><a href="#how-it-works" class="text-gray-600 hover:text-sky-600 font-medium transition duration-300">How It Works</a></li>
+                <li><a href="#advantage" class="text-gray-600 hover:text-sky-600 font-medium transition duration-300">Our Advantage</a></li>
+                <li><a href="#contact" class="text-gray-600 hover:text-sky-600 font-medium transition duration-300">Contact</a></li>
+                <li>
+                    <button id="loginBtnDesktop" class="bg-sky-700 text-white px-5 py-2 rounded-full text-base font-semibold hover:bg-sky-700 transition duration-300 transform hover:scale-105 shadow-md">
+                        Login
+                    </button>
+                    <button id="logoutBtnDesktop" class="bg-red-500 text-white px-5 py-2 rounded-full text-base font-semibold hover:bg-red-600 transition duration-300 transform hover:scale-105 shadow-md hidden">
+                        Logout
+                    </button>
+                </li>
+            </ul>
+        </nav>
+        <button id="mobileMenuBtn" class="md:hidden text-gray-600 hover:text-sky-600 focus:outline-none">
+            <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path>
+            </svg>
+        </button>
+
+        <div id="mobileMenu" class="mobile-menu md:hidden">
+            <ul class="flex flex-col items-center space-y-4">
+                <li><a href="#features" class="text-gray-800 hover:text-sky-600 font-medium transition duration-300 text-lg py-2 block" onclick="closeMobileMenu()">Features</a></li>
+                <li><a href="#how-it-works" class="text-gray-800 hover:text-sky-600 font-medium transition duration-300 text-lg py-2 block" onclick="closeMobileMenu()">How It Works</a></li>
+                <li><a href="#advantage" class="text-gray-800 hover:text-sky-600 font-medium transition duration-300 text-lg py-2 block" onclick="closeMobileMenu()">Our Advantage</a></li>
+                <li><a href="#contact" class="text-gray-800 hover:text-sky-600 font-medium transition duration-300 text-lg py-2 block" onclick="closeMobileMenu()">Contact</a></li>
+                <li>
+                    <button id="loginBtnMobile" class="bg-sky-700 text-white px-6 py-3 rounded-full text-base font-semibold hover:bg-sky-700 transition duration-300 transform hover:scale-105 shadow-md w-full">
+                        Login
+                    </button>
+                    <button id="logoutBtnMobile" class="bg-red-500 text-white px-6 py-3 rounded-full text-base font-semibold hover:bg-red-600 transition duration-300 transform hover:scale-105 shadow-md w-full hidden mt-2">
+                        Logout
+                    </button>
+                </li>
+            </ul>
+        </div>
+    </header>
+
+    <section class="bg-gradient-to-r from-amber-500 to-sky-400 text-gray-900 py-24 px-6 md:px-12 text-center rounded-b-3xl shadow-2xl">
+        <h1 class="text-4xl md:text-6xl font-extrabold leading-tight mb-6 animate-fade-in-down">
+            Share the Fun, <br class="md:hidden">Split the Bill
+        </h1>
+        <p class="text-lg md:text-xl mb-10 max-w-4xl mx-auto opacity-90 animate-fade-in-up">
+            Connect with like-minded people to experience trips, sports, and events.
+            Effortlessly plan, organize, and securely share costs.
+        </p>
+        <div class="flex flex-col sm:flex-row justify-center gap-6 animate-scale-in">
+            <a href="#" class="bg-white text-gray-900 px-10 py-4 rounded-full text-lg font-bold hover:bg-gray-100 transition duration-300 transform hover:scale-105 shadow-lg">
+                Get Started Now
+            </a>
+            <a href="#features" class="border-2 border-gray-900 text-gray-900 px-10 py-4 rounded-full text-lg font-bold hover:bg-white hover:text-sky-700 transition duration-300 transform hover:scale-105 shadow-lg">
+                Explore Features
+            </a>
+        </div>
+    </section>
+
+    <section id="features" class="py-20 px-6 md:px-12 bg-gray-50">
+        <h2 class="text-3xl md:text-4xl font-bold text-center mb-16 text-sky-800">Unlock Amazing Experiences</h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10 max-w-7xl mx-auto">
+
+            <div class="feature-card bg-white p-8 rounded-xl shadow-lg flex flex-col items-center text-center animate-fade-in-up" style="animation-delay: 0.1s;">
+                <div class="bg-sky-100 text-sky-600 p-5 rounded-full mb-6 shadow-md">
+                    <svg class="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
+                </div>
+                <h3 class="text-2xl font-semibold mb-3 text-gray-900">Integrated Payment System</h3>
+                <p class="text-gray-600 leading-relaxed">Secure, seamless in-app payments with automatic cost-splitting for groups, making shared expenses hassle-free.</p>
+            </div>
+
+            <div class="feature-card bg-white p-8 rounded-xl shadow-lg flex flex-col items-center text-center animate-fade-in-up" style="animation-delay: 0.2s;">
+                <div class="bg-green-100 text-green-600 p-5 rounded-full mb-6 shadow-md">
+                    <svg class="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path></svg>
+                </div>
+                <h3 class="text-2xl font-semibold mb-3 text-gray-900">Smart Matching Algorithm</h3>
+                <p class="text-gray-600 leading-relaxed">Our intelligent system recommends relevant events based on your preferences, budget, and location, connecting you with perfect matches.</p>
+            </div>
+
+            <div class="feature-card bg-white p-8 rounded-xl shadow-lg flex flex-col items-center text-center animate-fade-in-up" style="animation-delay: 0.3s;">
+                <div class="bg-yellow-100 text-yellow-600 p-5 rounded-full mb-6 shadow-md">
+                    <svg class="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 8h10M7 12h10m-9 4h4m-4 4h4m-4-4v4m-4-4v4m4-4H7a2 2 0 00-2 2v4a2 2 0 002 2h10a2 2 0 002-2v-4a2 2 0 00-2-2h-10z"></path></svg>
+                </div>
+                <h3 class="text-2xl font-semibold mb-3 text-gray-900">Group Chat & Messaging</h3>
+                <p class="text-gray-600 leading-relaxed">Communicate effortlessly in real-time with event organizers and other participants, ensuring everyone is always in the loop.</p>
+            </div>
+
+            <div class="feature-card bg-white p-8 rounded-xl shadow-lg flex flex-col items-center text-center animate-fade-in-up" style="animation-delay: 0.4s;">
+                <div class="bg-red-100 text-red-600 p-5 rounded-full mb-6 shadow-md">
+                    <svg class="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.324 1.118l1.519 4.674c.3.921-.755 1.688-1.539 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.539-1.118l1.519-4.674a1 1 0 00-.324-1.118L2.28 9.092c-.783-.57-.381-1.81.588-1.81h4.915a1 1 0 00.95-.69l1.519-4.674z"></path></svg>
+                </div>
+                <h3 class="text-2xl font-semibold mb-3 text-gray-900">Review & Rating System</h3>
+                <p class="text-gray-600 leading-relaxed">Build trust and ensure quality with transparent ratings and reviews for both event hosts and participants.</p>
+            </div>
+
+            <div class="feature-card bg-white p-8 rounded-xl shadow-lg flex flex-col items-center text-center animate-fade-in-up" style="animation-delay: 0.5s;">
+                <div class="bg-blue-100 text-blue-600 p-5 rounded-full mb-6 shadow-md">
+                    <svg class="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+                </div>
+                <h3 class="text-2xl font-semibold mb-3 text-gray-900">Itinerary Builder</h3>
+                <p class="text-gray-600 leading-relaxed">Our intuitive tool allows you to easily create, manage, and share detailed event plans and schedules, keeping everyone informed.</p>
+            </div>
+
+            <div class="feature-card bg-white p-8 rounded-xl shadow-lg flex flex-col items-center text-center animate-fade-in-up" style="animation-delay: 0.6s;">
+                <div class="bg-purple-100 text-purple-600 p-5 rounded-full mb-6 shadow-md">
+                    <svg class="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.007 12.007 0 002.928 12c0 3.064 1.139 5.962 3.195 8.281a11.955 11.955 0 008.618 3.04 12.007 12.007 0 002.944-8.618c0-3.064-1.139-5.962-3.195-8.281z"></path></svg>
+                </div>
+                <h3 class="text-2xl font-semibold mb-3 text-gray-900">Verified Hosts & Insurance</h3>
+                <p class="text-gray-600 leading-relaxed">Ensures safety and peace of mind with a badge system for verified hosts and optional travel/sports accident insurance add-ons.</p>
+            </div>
+        </div>
+    </section>
+
+    <section id="how-it-works" class="py-20 px-6 md:px-12 bg-white">
+        <h2 class="text-3xl md:text-4xl font-bold text-center mb-16 text-sky-800">How It Works</h2>
+        <div class="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
+            <div class="space-y-8 animate-slide-in-left">
+                <div class="flex items-start">
+                    <div class="flex-shrink-0 bg-sky-600 text-white rounded-full h-12 w-12 flex items-center justify-center text-xl font-bold mr-5 shadow-md">1</div>
+                    <div>
+                        <h3 class="text-2xl font-semibold mb-2">Sign Up or Log In</h3>
+                        <p class="text-gray-600">Quick and easy registration or login to access your personalized Joiners.com dashboard.</p>
+                    </div>
+                </div>
+                <div class="flex items-start">
+                    <div class="flex-shrink-0 bg-sky-600 text-white rounded-full h-12 w-12 flex items-center justify-center text-xl font-bold mr-5 shadow-md">2</div>
+                    <div>
+                        <h3 class="text-2xl font-semibold mb-2">Browse & Filter Events</h3>
+                        <p class="text-gray-600">Discover exciting events by interest, date, location, or leverage smart recommendations tailored just for you.</p>
+                    </div>
+                </div>
+                <div class="flex items-start">
+                    <div class="flex-shrink-0 bg-sky-600 text-white rounded-full h-12 w-12 flex items-center justify-center text-xl font-bold mr-5 shadow-md">3</div>
+                    <div>
+                        <h3 class="text-2xl font-semibold mb-2">View Details & Join</h3>
+                        <p class="text-gray-600">Explore comprehensive trip itineraries, cost breakdowns per person, and host reviews before tapping "Join".</p>
+                    </div>
+                </div>
+                <div class="flex items-start">
+                    <div class="flex-shrink-0 bg-sky-600 text-white rounded-full h-12 w-12 flex items-center justify-center text-xl font-bold mr-5 shadow-md">4</div>
+                    <div>
+                        <h3 class="text-2xl font-semibold mb-2">Pay Within App</h3>
+                        <p class="text-gray-600">Securely split and pay for your share of the event cost automatically, ensuring fairness and transparency.</p>
+                    </div>
+                </div>
+                <div class="flex items-start">
+                    <div class="flex-shrink-0 bg-sky-600 text-white rounded-full h-12 w-12 flex items-center justify-center text-xl font-bold mr-5 shadow-md">5</div>
+                    <div>
+                        <h3 class="text-2xl font-semibold mb-2">Join Group Chat</h3>
+                        <p class="text-gray-600">Connect instantly with other participants and the event organizer in a dedicated group chat for seamless coordination.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="flex justify-center relative overflow-hidden h-[700px] w-[450px] max-w-sm rounded-3xl shadow-2xl border-4 border-sky-200">
+                <img id="howItWorksImage1" src="Appint.jpg" alt="Joiners.com App Interface 1" class="absolute inset-0 w-full h-full object-cover transition-transform duration-700 ease-in-out">
+                <img id="howItWorksImage2" src="images/Appint1.PNG" alt="Joiners.com App Interface 2" class="absolute inset-0 w-full h-full object-cover transition-transform duration-700 ease-in-out hidden">
+                <img id="howItWorksImage3" src="images/Appint2.PNG" alt="Joiners.com App Interface 3" class="absolute inset-0 w-full h-full object-cover transition-transform duration-700 ease-in-out hidden">
+                <img id="howItWorksImage4" src="images/Appint3.PNG" alt="Joiners.com App Interface 4" class="absolute inset-0 w-full h-full object-cover transition-transform duration-700 ease-in-out hidden">
+                <img id="howItWorksImage5" src="images/Appint4.PNG" alt="Joiners.com App Interface 5" class="absolute inset-0 w-full h-full object-cover transition-transform duration-700 ease-in-out hidden">
+            </div>
+        </div>
+    </section>
+
+    <section id="advantage" class="py-20 px-6 md:px-12 bg-gray-50">
+        <h2 class="text-3xl md:text-4xl font-bold text-center mb-16 text-sky-800">Our Competitive Edge</h2>
+        <div class="max-w-6xl mx-auto bg-white p-10 rounded-xl shadow-lg border border-gray-200 flex flex-col md:flex-row items-center md:space-x-12 advantage-card">
+            <div class="md:w-1/2 mb-10 md:mb-0 animate-slide-in-left">
+                <img src="Collab.jpeg" alt="Competitive Advantage" class="rounded-lg shadow-xl w-full border border-blue-100">
+            </div>
+            <div class="md:w-1/2 animate-slide-in-right">
+                <p class="text-lg text-gray-700 mb-6 leading-relaxed">
+                    <strong>Joiners.com</strong> uniquely merges social networking with exceptional value, filling a crucial gap in the market by focusing on bringing shared experiences together, rather than just aggregating products or services.
+                </p>
+                <ul class="list-disc list-inside text-gray-700 space-y-3 font-medium">
+                    <li><strong> Smart Cost-Sharing: </strong> Makes high-quality experiences accessible and affordable for everyone.</li>
+                    <li><strong>Precision Matchmaking:</strong> Connects you with highly relevant events and genuinely like-minded individuals.</li>
+                    <li><strong>Reliable Trust System:</strong> Built-in ratings and verified users cultivate a secure and reliable community.</li>
+                    <li><strong>Unified Platform:</strong> Eliminates the need for multiple apps by integrating planning, payment, and communication.</li>
+                    <li><strong>Empowered Community:</strong> Our platform is designed to empower users, fostering engagement and responding to data-driven demand.</li>
+                </ul>
+            </div>
+        </div>
+    </section>
+
+    <section id="target-audience" class="py-20 px-6 md:px-12 bg-white">
+        <h2 class="text-3xl md:text-4xl font-bold text-center mb-16 text-sky-800">Who We Serve</h2>
+        <div class="max-w-6xl mx-auto text-center">
+            <p class="text-xl text-gray-700 mb-10 leading-relaxed">
+                Joiners.com is the ideal platform for individuals who are passionate about exploring, connecting, and enjoying new adventures without the burden of high costs or complex organization.
+            </p>
+            <div class="flex flex-wrap justify-center gap-8">
+                <div class="audience-card bg-sky-50 p-8 rounded-xl shadow-md flex flex-col items-center w-full sm:w-64 animate-fade-in-up" style="animation-delay: 0.1s;">
+                    <img src="Pro.jpg" alt="Young Professionals" class="rounded-full mb-5 border-4 border-sky-200">
+                    <h3 class="text-2xl font-semibold text-gray-900 mb-2">Young Urban Professionals</h3>
+                    <p class="text-gray-600 text-base leading-relaxed">Seeking vibrant social and affordable experiences to enrich their after-work hours and weekends.</p>
+                </div>
+                <div class="audience-card bg-sky-50 p-8 rounded-xl shadow-md flex flex-col items-center w-full sm:w-64 animate-fade-in-up" style="animation-delay: 0.2s;">
+                    <img src="Stu.jpg" alt="Students" class="rounded-full mb-5 border-4 border-sky-200">
+                    <h3 class="text-2xl font-semibold text-gray-900 mb-2">Students</h3>
+                    <p class="text-gray-600 text-base leading-relaxed">Looking for budget-friendly ways to socialize, explore new interests, and create lasting memories with friends.</p>
+                </div>
+                <div class="audience-card bg-sky-50 p-8 rounded-xl shadow-md flex flex-col items-center w-full sm:w-64 animate-fade-in-up" style="animation-delay: 0.3s;">
+                    <img src="Trav.jpg" alt="Travel Enthusiasts" class="rounded-full mb-5 border-4 border-sky-200">
+                    <h3 class="text-2xl font-semibold text-gray-900 mb-2">Travel & Sports Enthusiasts</h3>
+                    <p class="text-gray-600 text-base leading-relaxed">Passionate about active pursuits and eager to share costs and experiences with a dynamic community.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="bg-gradient-to-r from-amber-500 to-sky-400 text-black py-20 px-6 md:px-12 text-center rounded-t-3xl shadow-2xl">
+        <h2 class="text-3xl md:text-5xl font-bold mb-6">Ready to Join the Fun?</h2>
+        <p class="text-lg md:text-xl mb-10 max-w-4xl mx-auto opacity-90">
+            Download the Joiners.com app today and embark on a journey of shared experiences and unforgettable moments!
+        </p>
+        <a href="#" class="bg-white text-sky-800 px-12 py-4 rounded-full text-xl font-bold hover:bg-gray-100 transition duration-300 transform hover:scale-105 shadow-lg">
+            Download the App Now!
+        </a>
+    </section>
+
+    <footer id="contact" class="bg-gray-900 text-gray-300 py-12 px-6 md:px-12 rounded-t-xl">
+        <div class="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-10 text-center md:text-left">
+            <div>
+                <h3 class="text-2xl font-bold text-white mb-5">Joiners.com</h3>
+                <p class="text-gray-400">Share the Fun, Split the Bill.</p>
+                <p class="mt-4 text-gray-500">&copy; 2025 Joiners.com. All rights reserved.</p>
+            </div>
+            <div>
+                <h3 class="text-xl font-bold text-white mb-5">Quick Links</h3>
+                <ul class="space-y-3">
+                    <li><a href="#features" class="text-gray-400 hover:text-white transition duration-300">Features</a></li>
+                    <li><a href="#how-it-works" class="text-gray-400 hover:text-white transition duration-300">How It Works</a></li>
+                    <li><a href="#advantage" class="text-gray-400 hover:text-white transition duration-300">Our Advantage</a></li>
+                    <li><a href="#contact" class="text-gray-400 hover:text-white transition duration-300">Contact Us</a></li>
+                </ul>
+            </div>
+            <div>
+                <h3 class="text-xl font-bold text-white mb-5">Get in Touch</h3>
+                <p class="text-gray-400">Email: info@joiners.com</p>
+                <p class="text-gray-400">Phone: +1 (555) 123-4567</p>
+                <div class="flex justify-center md:justify-start space-x-5 mt-6">
+                    <a href="#" class="text-gray-400 hover:text-white transition duration-300 transform hover:scale-110">
+                        <svg class="w-7 h-7" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path d="M8.29 20.251c7.547 0 11.675-6.253 11.675-11.675 0-.178 0-.355-.007-.533A8.349 8.349 0 0022 5.92a8.19 8.19 0 01-2.357.646 4.118 4.118 0 001.804-2.27 8.224 8.224 0 01-2.605.996 4.107 4.107 0 00-6.993 3.743 11.65 11.65 0 01-8.457-4.287 4.106 4.106 0 001.27 5.477A4.072 4.072 0 012.8 9.713v.052a4.105 4.105 0 003.292 4.022 4.095 4.095 0 01-1.853.07 4.108 4.108 0 003.834 2.85A8.233 8.233 0 012 18.188a11.644 11.644 0 006.29 2.063z"></path></svg>
+                    </a>
+                    <a href="#" class="text-gray-400 hover:text-white transition duration-300 transform hover:scale-110">
+                        <svg class="w-7 h-7" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path fill-rule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.47.087.671-.205.671-.456 0-.227-.007-.75-.012-1.848-2.775.602-3.36-1.34-3.36-1.34-.455-1.152-1.11-1.458-1.11-1.458-.91-.618.069-.606.069-.606 1.004.07 1.532 1.03 1.532 1.03.89 1.529 2.34 1.087 2.91.83.09-.64.35-1.085.637-1.334-2.22-.253-4.555-1.113-4.555-4.93 0-1.09.39-1.984 1.03-2.68-.104-.253-.448-1.274.09-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.7.114 2.503.337 1.909-1.296 2.747-1.026 2.747-1.026.54 1.376.196 2.397.092 2.65.64.696 1.029 1.59 1.029 2.68 0 3.823-2.339 4.67-4.562 4.922.357.307.676.917.676 1.854 0 1.334-.012 2.41-.012 2.727 0 .252.19.54.678.443C19.14 20.22 22 16.465 22 12.017 22 6.484 17.522 2 12 2Z" clip-rule="evenodd"></path></svg>
+                    </a>
+                    <a href="#" class="text-gray-400 hover:text-white transition duration-300 transform hover:scale-110">
+                        <svg class="w-7 h-7" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path d="M20.947 8.305a6.53 6.53 0 00-.419-2.216 4.61 4.61 0 00-2.633-2.633 6.53 6.53 0 00-2.216-.419C15.214 2 14.846 2 12 2s-3.214 0-4.309.084a6.53 6.53 0 00-2.216.419 4.61 4.61 0 00-2.633 2.633 6.53 6.53 0 00-.419 2.216C2 8.786 2 9.154 2 12s0 3.214.084 4.309a6.53 6.53 0 00.419 2.216 4.61 4.61 0 002.633 2.633 6.53 6.53 0 002.216.419C8.786 22 9.154 22 12 22s3.214 0 4.309-.084a6.53 6.53 0 002.216-.419 4.61 4.61 0 002.633-2.633 6.53 6.53 0 00.419-2.216C22 15.214 22 14.846 22 12s0-3.214-.084-4.309zM12 15.5c-1.933 0-3.5-1.567-3.5-3.5s1.567-3.5 3.5-3.5 3.5 1.567 3.5 3.5-1.567 3.5-3.5 3.5zM18 7.5c-.828 0-1.5-.672-1.5-1.5s.672-1.5 1.5-1.5 1.5.672 1.5 1.5-.672 1.5-1.5 1.5z"></path></svg>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <div id="loginModal" class="modal-overlay">
+        <div class="modal-content">
+            <button id="closeModalBtn" class="absolute top-4 right-4 text-gray-400 hover:text-gray-600 transition duration-300">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+            </button>
+            <h2 class="text-2xl font-bold text-sky-700 mb-6 text-center">Login to Joiners.com</h2>
+            <form id="loginForm" class="space-y-4">
+                <div>
+                    <label for="email" class="block text-sm font-medium text-gray-700 mb-1">Email Address</label>
+                    <input type="email" id="email" class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:ring-sky-500 focus:border-sky-500 sm:text-base" placeholder="Enter 'test'">
+                </div>
+                <div>
+                    <label for="password" class="block text-sm font-medium text-gray-700 mb-1">Password</label>
+                    <input type="password" id="password" class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:ring-sky-500 focus:border-sky-500 sm:text-base" placeholder="Enter 'test'">
+                </div>
+                <div class="text-center pt-4">
+                    <button type="submit" class="bg-sky-600 text-white px-8 py-3 rounded-full text-lg font-semibold hover:bg-sky-700 transition duration-300 transform hover:scale-105 shadow-lg">
+                        Log In
+                    </button>
+                </div>
+            </form>
+            <p class="text-center text-sm text-gray-500 mt-6">
+                Don't have an account? <a href="#" class="text-sky-600 hover:underline">Sign Up Here</a>
+            </p>
+        </div>
+    </div>
+
+    <div id="messageBox" class="message-box"></div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Desktop buttons
+            const loginBtnDesktop = document.getElementById('loginBtnDesktop');
+            const logoutBtnDesktop = document.getElementById('logoutBtnDesktop');
+
+            // Mobile buttons
+            const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+            const mobileMenu = document.getElementById('mobileMenu');
+            const loginBtnMobile = document.getElementById('loginBtnMobile');
+            const logoutBtnMobile = document.getElementById('logoutBtnMobile');
+
+            // Modal elements
+            const loginModal = document.getElementById('loginModal');
+            const closeModalBtn = document.getElementById('closeModalBtn');
+            const loginForm = document.getElementById('loginForm');
+            const messageBox = document.getElementById('messageBox');
+
+            let isLoggedIn = false; // Simple client-side state
+
+            // Function to display messages (success/error)
+            function showMessage(message, type = 'success') {
+                messageBox.textContent = message;
+                messageBox.className = `message-box show ${type}`; // Reset classes and add new ones
+                setTimeout(() => {
+                    messageBox.classList.remove('show');
+                }, 3000); // Hide after 3 seconds
+            }
+
+            // Function to update login/logout button visibility for both desktop and mobile
+            function updateAuthButtons() {
+                if (isLoggedIn) {
+                    loginBtnDesktop.classList.add('hidden');
+                    logoutBtnDesktop.classList.remove('hidden');
+                    loginBtnMobile.classList.add('hidden');
+                    logoutBtnMobile.classList.remove('hidden');
+                } else {
+                    loginBtnDesktop.classList.remove('hidden');
+                    logoutBtnDesktop.classList.add('hidden');
+                    loginBtnMobile.classList.remove('hidden');
+                    logoutBtnMobile.classList.add('hidden');
+                }
+            }
+
+            // Toggle mobile menu visibility
+            mobileMenuBtn.addEventListener('click', () => {
+                mobileMenu.classList.toggle('active');
+            });
+
+            // Function to close mobile menu, useful for navigation links
+            window.closeMobileMenu = function() {
+                mobileMenu.classList.remove('active');
+            };
+
+            // Show login modal from desktop button
+            loginBtnDesktop.addEventListener('click', () => {
+                loginModal.classList.add('show');
+            });
+
+            // Show login modal from mobile button
+            loginBtnMobile.addEventListener('click', () => {
+                loginModal.classList.add('show');
+                closeMobileMenu(); // Close mobile menu when modal opens
+            });
+
+
+            // Hide login modal
+            closeModalBtn.addEventListener('click', () => {
+                loginModal.classList.remove('show');
+            });
+
+            // Close modal if clicked outside content
+            loginModal.addEventListener('click', (e) => {
+                if (e.target === loginModal) {
+                    loginModal.classList.remove('show');
+                }
+            });
+
+            // Handle login form submission
+            loginForm.addEventListener('submit', (e) => {
+                e.preventDefault(); // Prevent default form submission
+
+                const email = document.getElementById('email').value.trim();
+                const password = document.getElementById('password').value.trim();
+
+                // Specific login credentials: username 'test', password 'test'
+                if (email === 'test@test.com' && password === 'test') {
+                    isLoggedIn = true;
+                    showMessage('Login successful! Redirecting to user homepage...', 'success');
+                    loginModal.classList.remove('show'); // Hide modal on success
+                    updateAuthButtons(); // Update buttons
+                    // Clear form fields
+                    document.getElementById('email').value = '';
+                    document.getElementById('password').value = '';
+
+                    // Redirect to the user homepage
+                    window.location.href = 'userhomepage.html';
+
+                } else if (email === '' || password === '') {
+                    showMessage('Please enter both email and password.', 'error');
+                } else {
+                    showMessage('Invalid email or password. Please try again.', 'error');
+                }
+            });
+
+            // Handle logout from desktop button
+            logoutBtnDesktop.addEventListener('click', () => {
+                isLoggedIn = false;
+                showMessage('You have been logged out.', 'success');
+                updateAuthButtons(); // Update buttons
+            });
+
+            // Handle logout from mobile button
+            logoutBtnMobile.addEventListener('click', () => {
+                isLoggedIn = false;
+                showMessage('You have been logged out.', 'success');
+                updateAuthButtons(); // Update buttons
+                closeMobileMenu(); // Close mobile menu after logout
+            });
+
+
+            // Initial button state on page load
+            updateAuthButtons();
+
+
+            // --- Image Carousel Logic ---
+            const howItWorksImages = [
+                document.getElementById('howItWorksImage1'),
+                document.getElementById('howItWorksImage2'),
+                document.getElementById('howItWorksImage3'),
+                document.getElementById('howItWorksImage4'),
+                document.getElementById('howItWorksImage5') // Added the fifth image
+            ];
+            let currentImageIndex = 0;
+
+            // Initialize: ensure first image is visible and in correct position
+            howItWorksImages[0].classList.remove('hidden');
+            howItWorksImages[0].classList.add('slide-in-right'); // Ensure it starts in place
+
+            function showNextHowItWorksImage() {
+                const prevImageIndex = currentImageIndex;
+                currentImageIndex = (currentImageIndex + 1) % howItWorksImages.length;
+
+                const currentImage = howItWorksImages[prevImageIndex];
+                const nextImage = howItWorksImages[currentImageIndex];
+
+                // 1. Prepare the next image to slide in from the right
+                nextImage.classList.add('slide-in-from-right');
+                nextImage.classList.remove('hidden'); // Make it visible for animation
+
+                // Use a short delay to allow the browser to render the initial `slide-in-from-right` state
+                // before applying the transition to `slide-in-right`.
+                setTimeout(() => {
+                    // 2. Slide the current image out to the left
+                    currentImage.classList.add('slide-out-left');
+                    currentImage.classList.remove('slide-in-right'); // Remove the current active state
+
+                    // 3. Slide the next image into view
+                    nextImage.classList.remove('slide-in-from-right');
+                    nextImage.classList.add('slide-in-right');
+                }, 10); // A small delay is often needed for the animation to register properly
+
+                // Clean up classes after the transition is complete
+                // This setTimeout needs to match the CSS transition duration
+                setTimeout(() => {
+                    currentImage.classList.add('hidden'); // Hide the old image
+                    currentImage.classList.remove('slide-out-left'); // Clean up old image class
+                    // Crucially, reset the old image's transform for its next turn
+                    currentImage.classList.remove('slide-in-from-right'); // Ensure it's not stuck off-screen if it was the last one to slide in.
+                }, 700); // This matches the CSS transition duration (700ms)
+            }
+
+            // Start the image rotation after the page loads
+            setInterval(showNextHowItWorksImage, 3000); // Change image every 3 seconds (adjust as needed)
+            // --- End Image Carousel Logic ---
+        });
+    </script>
+</body>
+</html>
