@@ -5,15 +5,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>PaJoin.com - Share the Fun, Split the Bill</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
-        /* Custom font for the entire page */
+        /* Custom font and base styling */
         body {
             font-family: 'Inter', sans-serif;
-            background-color: #f0f4f8; /* Softer light blue-gray background */
-            line-height: 1.6; /* Improved line height for readability */
+            line-height: 1.6;
         }
-        /* Inter font import from Google Fonts */
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
 
         /* Message box styling */
         .message-box {
@@ -33,16 +31,7 @@
             opacity: 1;
             visibility: visible;
         }
-        .message-box.error {
-            background-color: #fef2f2;
-            color: #ef4444;
-            border: 1px solid #ef4444;
-        }
-        .message-box.success {
-            background-color: #ecfdf5;
-            color: #10b981;
-            border: 1px solid #10b981;
-        }
+        /* No specific error/success background colors here; use Tailwind directly on the element */
 
         /* Modal specific styles */
         .modal-overlay {
@@ -82,67 +71,57 @@
         }
 
         /* General element animations */
-        .animate-fade-in-down {
-            animation: fadeInDown 0.8s ease-out forwards;
-        }
-        .animate-fade-in-up {
-            animation: fadeInUp 0.8s ease-out forwards;
-        }
-        .animate-slide-in-left {
-            animation: slideInLeft 0.8s ease-out forwards;
-        }
-        /* Removed .animate-slide-in-right from here as it's now controlled by JS for carousel */
-        .animate-scale-in {
-            animation: scaleIn 0.6s ease-out forwards;
-        }
-
+        /* Tailwind's built-in animate classes or custom utility classes are preferred */
         @keyframes fadeInDown {
             from { opacity: 0; transform: translateY(-20px); }
             to { opacity: 1; transform: translateY(0); }
         }
+        .animate-fade-in-down { animation: fadeInDown 0.8s ease-out forwards; }
+
         @keyframes fadeInUp {
             from { opacity: 0; transform: translateY(20px); }
             to { opacity: 1; transform: translateY(0); }
         }
+        .animate-fade-in-up { animation: fadeInUp 0.8s ease-out forwards; }
+
         @keyframes slideInLeft {
             from { opacity: 0; transform: translateX(-50px); }
             to { opacity: 1; transform: translateX(0); }
         }
-        /* Removed slideInRight keyframes as carousel uses different transform */
+        .animate-slide-in-left { animation: slideInLeft 0.8s ease-out forwards; }
+
         @keyframes scaleIn {
             from { opacity: 0; transform: scale(0.9); }
             to { opacity: 1; transform: scale(1); }
         }
+        .animate-scale-in { animation: scaleIn 0.6s ease-out forwards; }
 
-        /* Card hover effect */
+        /* Card hover effect - using direct Tailwind classes is better for consistency */
+        /*
         .feature-card, .advantage-card, .audience-card {
             transition: all 0.3s ease-in-out;
-            border: 1px solid theme('colors.gray.200'); /* Subtle border */
+            border: 1px solid theme('colors.gray.200');
         }
         .feature-card:hover, .advantage-card:hover, .audience-card:hover {
             transform: translateY(-8px);
-            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1); /* More pronounced shadow */
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
         }
+        */
 
         /* Mobile menu specific styles */
         .mobile-menu {
             position: absolute;
-            top: 100%; /* Position right below the header */
+            top: 100%;
             left: 0;
             width: 100%;
             background-color: white;
             box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
             padding: 1rem 0;
             z-index: 50;
-            display: none; /* Hidden by default */
+            display: none;
         }
         .mobile-menu.active {
-            display: block; /* Show when active */
-        }
-
-        /* Added for image carousel */
-        .hidden {
-            display: none;
+            display: block;
         }
 
         /* Image Carousel Animations */
@@ -151,7 +130,7 @@
             transform: translateX(100%);
         }
         /* State for the active image, or image sliding into view */
-        .slide-in-right { /* Renamed from original .animate-slide-in-right to reflect its role in carousel */
+        .slide-in-right {
             transform: translateX(0%);
         }
         /* State for images sliding out to the left */
@@ -160,7 +139,7 @@
         }
     </style>
 </head>
-<body class="text-gray-800">
+<body class="bg-gray-50 text-gray-800">
 
     <header class="bg-white shadow-lg py-4 px-6 md:px-12 flex justify-between items-center rounded-b-xl relative">
         <div class="flex items-center">
@@ -191,10 +170,10 @@
 
         <div id="mobileMenu" class="mobile-menu md:hidden">
             <ul class="flex flex-col items-center space-y-4">
-                <li><a href="#features" class="text-gray-800 hover:text-sky-600 font-medium transition duration-300 text-lg py-2 block" onclick="closeMobileMenu()">Features</a></li>
-                <li><a href="#how-it-works" class="text-gray-800 hover:text-sky-600 font-medium transition duration-300 text-lg py-2 block" onclick="closeMobileMenu()">How It Works</a></li>
-                <li><a href="#advantage" class="text-gray-800 hover:text-sky-600 font-medium transition duration-300 text-lg py-2 block" onclick="closeMobileMenu()">Our Advantage</a></li>
-                <li><a href="#contact" class="text-gray-800 hover:text-sky-600 font-medium transition duration-300 text-lg py-2 block" onclick="closeMobileMenu()">Contact</a></li>
+                <li><a href="#features" class="text-gray-800 hover:text-sky-600 font-medium transition duration-300 text-lg py-2 block" data-nav-link>Features</a></li>
+                <li><a href="#how-it-works" class="text-gray-800 hover:text-sky-600 font-medium transition duration-300 text-lg py-2 block" data-nav-link>How It Works</a></li>
+                <li><a href="#advantage" class="text-gray-800 hover:text-sky-600 font-medium transition duration-300 text-lg py-2 block" data-nav-link>Our Advantage</a></li>
+                <li><a href="#contact" class="text-gray-800 hover:text-sky-600 font-medium transition duration-300 text-lg py-2 block" data-nav-link>Contact</a></li>
                 <li>
                     <button id="loginBtnMobile" class="bg-sky-700 text-white px-6 py-3 rounded-full text-base font-semibold hover:bg-sky-700 transition duration-300 transform hover:scale-105 shadow-md w-full">
                         Login
@@ -207,12 +186,12 @@
         </div>
     </header>
 
-    <section class="bg-gradient-to-r from-amber-500 to-sky-400 text-gray-900 py-24 px-6 md:px-12 text-center rounded-b-3xl shadow-2xl">
+    <section class="bg-gradient-to-r from-amber-500 to-sky-400 text-gray-900 py-24 px-6 md:px-12 text-center shadow-2xl">
         <h1 class="text-2xl md:text-3xl font-bold leading-tight mb-6 animate-fade-in-down">
-            Laging drawing?, <br class="md:hidden">Just Pack and Join</br> <span class = text-5xl md: test-8xl font-extrabold> Pa join na lang! </span></br>
+            Laging drawing?, <br class="md:hidden">Just Pack and Join</br> <span class="text-5xl md:text-8xl font-extrabold"> Pa join na lang! </span></br>
         </h1>
         <p class="text-lg md:text-xl mb-10 max-w-4xl mx-auto opacity-90 animate-fade-in-up">
-            Finally make those activities happen! Discover budget-friendly group trips and events where sharing fun and splitting the bill is easy and hassle-free
+            Finally make those activities happen! Discover budget-friendly group trips and events where sharing fun and splitting the bill is easy and hassle-free.
         </p>
         <div class="flex flex-col sm:flex-row justify-center gap-6 animate-scale-in">
             <a href="#" class="bg-white text-gray-900 px-10 py-4 rounded-full text-lg font-bold hover:bg-gray-100 transition duration-300 transform hover:scale-105 shadow-lg">
@@ -228,7 +207,7 @@
         <h2 class="text-3xl md:text-4xl font-bold text-center mb-16 text-sky-800">Unlock Amazing Experiences</h2>
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10 max-w-7xl mx-auto">
 
-            <div class="feature-card bg-white p-8 rounded-xl shadow-lg flex flex-col items-center text-center animate-fade-in-up" style="animation-delay: 0.1s;">
+            <div class="bg-white p-8 rounded-xl shadow-lg flex flex-col items-center text-center transition-all duration-300 ease-in-out border border-gray-200 hover:translate-y-[-8px] hover:shadow-2xl animate-fade-in-up" style="animation-delay: 0.1s;">
                 <div class="bg-sky-100 text-sky-600 p-5 rounded-full mb-6 shadow-md">
                     <svg class="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
                 </div>
@@ -236,7 +215,7 @@
                 <p class="text-gray-600 leading-relaxed">Secure, seamless in-app payments with automatic cost-splitting for groups, making shared expenses hassle-free.</p>
             </div>
 
-            <div class="feature-card bg-white p-8 rounded-xl shadow-lg flex flex-col items-center text-center animate-fade-in-up" style="animation-delay: 0.2s;">
+            <div class="bg-white p-8 rounded-xl shadow-lg flex flex-col items-center text-center transition-all duration-300 ease-in-out border border-gray-200 hover:translate-y-[-8px] hover:shadow-2xl animate-fade-in-up" style="animation-delay: 0.2s;">
                 <div class="bg-green-100 text-green-600 p-5 rounded-full mb-6 shadow-md">
                     <svg class="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path></svg>
                 </div>
@@ -244,7 +223,7 @@
                 <p class="text-gray-600 leading-relaxed">Our intelligent system recommends relevant events based on your preferences, budget, and location, connecting you with perfect matches.</p>
             </div>
 
-            <div class="feature-card bg-white p-8 rounded-xl shadow-lg flex flex-col items-center text-center animate-fade-in-up" style="animation-delay: 0.3s;">
+            <div class="bg-white p-8 rounded-xl shadow-lg flex flex-col items-center text-center transition-all duration-300 ease-in-out border border-gray-200 hover:translate-y-[-8px] hover:shadow-2xl animate-fade-in-up" style="animation-delay: 0.3s;">
                 <div class="bg-yellow-100 text-yellow-600 p-5 rounded-full mb-6 shadow-md">
                     <svg class="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 8h10M7 12h10m-9 4h4m-4 4h4m-4-4v4m-4-4v4m4-4H7a2 2 0 00-2 2v4a2 2 0 002 2h10a2 2 0 002-2v-4a2 2 0 00-2-2h-10z"></path></svg>
                 </div>
@@ -252,7 +231,7 @@
                 <p class="text-gray-600 leading-relaxed">Communicate effortlessly in real-time with event organizers and other participants, ensuring everyone is always in the loop.</p>
             </div>
 
-            <div class="feature-card bg-white p-8 rounded-xl shadow-lg flex flex-col items-center text-center animate-fade-in-up" style="animation-delay: 0.4s;">
+            <div class="bg-white p-8 rounded-xl shadow-lg flex flex-col items-center text-center transition-all duration-300 ease-in-out border border-gray-200 hover:translate-y-[-8px] hover:shadow-2xl animate-fade-in-up" style="animation-delay: 0.4s;">
                 <div class="bg-red-100 text-red-600 p-5 rounded-full mb-6 shadow-md">
                     <svg class="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.324 1.118l1.519 4.674c.3.921-.755 1.688-1.539 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.539-1.118l1.519-4.674a1 1 0 00-.324-1.118L2.28 9.092c-.783-.57-.381-1.81.588-1.81h4.915a1 1 0 00.95-.69l1.519-4.674z"></path></svg>
                 </div>
@@ -260,7 +239,7 @@
                 <p class="text-gray-600 leading-relaxed">Build trust and ensure quality with transparent ratings and reviews for both event hosts and participants.</p>
             </div>
 
-            <div class="feature-card bg-white p-8 rounded-xl shadow-lg flex flex-col items-center text-center animate-fade-in-up" style="animation-delay: 0.5s;">
+            <div class="bg-white p-8 rounded-xl shadow-lg flex flex-col items-center text-center transition-all duration-300 ease-in-out border border-gray-200 hover:translate-y-[-8px] hover:shadow-2xl animate-fade-in-up" style="animation-delay: 0.5s;">
                 <div class="bg-blue-100 text-blue-600 p-5 rounded-full mb-6 shadow-md">
                     <svg class="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
                 </div>
@@ -268,7 +247,7 @@
                 <p class="text-gray-600 leading-relaxed">Our intuitive tool allows you to easily create, manage, and share detailed event plans and schedules, keeping everyone informed.</p>
             </div>
 
-            <div class="feature-card bg-white p-8 rounded-xl shadow-lg flex flex-col items-center text-center animate-fade-in-up" style="animation-delay: 0.6s;">
+            <div class="bg-white p-8 rounded-xl shadow-lg flex flex-col items-center text-center transition-all duration-300 ease-in-out border border-gray-200 hover:translate-y-[-8px] hover:shadow-2xl animate-fade-in-up" style="animation-delay: 0.6s;">
                 <div class="bg-purple-100 text-purple-600 p-5 rounded-full mb-6 shadow-md">
                     <svg class="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.007 12.007 0 002.928 12c0 3.064 1.139 5.962 3.195 8.281a11.955 11.955 0 008.618 3.04 12.007 12.007 0 002.944-8.618c0-3.064-1.139-5.962-3.195-8.281z"></path></svg>
                 </div>
@@ -319,31 +298,31 @@
                 </div>
             </div>
             <div class="flex justify-center relative overflow-hidden h-[700px] w-[450px] max-w-sm rounded-3xl shadow-2xl border-4 border-sky-200">
-                <img id="howItWorksImage1" src="Appint.jpg" alt="PaJoin.com App Interface 1" class="absolute inset-0 w-full h-full object-cover transition-transform duration-700 ease-in-out">
-                <img id="howItWorksImage2" src="images/Appint1.PNG" alt="PaJoin.com App Interface 2" class="absolute inset-0 w-full h-full object-cover transition-transform duration-700 ease-in-out hidden">
-                <img id="howItWorksImage3" src="images/Appint2.PNG" alt="PaJoin.com App Interface 3" class="absolute inset-0 w-full h-full object-cover transition-transform duration-700 ease-in-out hidden">
-                <img id="howItWorksImage4" src="images/Appint3.PNG" alt="PaJoin.com App Interface 4" class="absolute inset-0 w-full h-full object-cover transition-transform duration-700 ease-in-out hidden">
-                <img id="howItWorksImage5" src="images/Appint4.PNG" alt="PaJoin.com App Interface 5" class="absolute inset-0 w-full h-full object-cover transition-transform duration-700 ease-in-out hidden">
+                <img src="Appint.jpg" alt="PaJoin.com App Interface 1" class="app-carousel-image absolute inset-0 w-full h-full object-cover transition-transform duration-700 ease-in-out">
+                <img src="images/Appint1.PNG" alt="PaJoin.com App Interface 2" class="app-carousel-image absolute inset-0 w-full h-full object-cover transition-transform duration-700 ease-in-out hidden">
+                <img src="images/Appint2.PNG" alt="PaJoin.com App Interface 3" class="app-carousel-image absolute inset-0 w-full h-full object-cover transition-transform duration-700 ease-in-out hidden">
+                <img src="images/Appint3.PNG" alt="PaJoin.com App Interface 4" class="app-carousel-image absolute inset-0 w-full h-full object-cover transition-transform duration-700 ease-in-out hidden">
+                <img src="images/Appint4.PNG" alt="PaJoin.com App Interface 5" class="app-carousel-image absolute inset-0 w-full h-full object-cover transition-transform duration-700 ease-in-out hidden">
             </div>
         </div>
     </section>
 
     <section id="advantage" class="py-20 px-6 md:px-12 bg-gray-50">
         <h2 class="text-3xl md:text-4xl font-bold text-center mb-16 text-sky-800">Our Competitive Edge</h2>
-        <div class="max-w-6xl mx-auto bg-white p-10 rounded-xl shadow-lg border border-gray-200 flex flex-col md:flex-row items-center md:space-x-12 advantage-card">
+        <div class="max-w-6xl mx-auto bg-white p-10 rounded-xl shadow-lg border border-gray-200 flex flex-col md:flex-row items-center md:space-x-12 transition-all duration-300 ease-in-out hover:translate-y-[-8px] hover:shadow-2xl">
             <div class="md:w-1/2 mb-10 md:mb-0 animate-slide-in-left">
                 <img src="Collab.jpeg" alt="Competitive Advantage" class="rounded-lg shadow-xl w-full border border-blue-100">
             </div>
             <div class="md:w-1/2 animate-slide-in-right">
                 <p class="text-lg text-gray-700 mb-6 leading-relaxed">
-                    <strong>PaJoin.com</strong> uniquely merges social networking with exceptional value, filling a crucial gap in the market by focusing on bringing shared experiences together, rather than just aggregating products or services.
+                    **PaJoin.com** uniquely merges social networking with exceptional value, filling a crucial gap in the market by focusing on bringing shared experiences together, rather than just aggregating products or services.
                 </p>
                 <ul class="list-disc list-inside text-gray-700 space-y-3 font-medium">
-                    <li><strong> Smart Cost-Sharing: </strong> Makes high-quality experiences accessible and affordable for everyone.</li>
-                    <li><strong>Precision Matchmaking:</strong> Connects you with highly relevant events and genuinely like-minded individuals.</li>
-                    <li><strong>Reliable Trust System:</strong> Built-in ratings and verified users cultivate a secure and reliable community.</li>
-                    <li><strong>Unified Platform:</strong> Eliminates the need for multiple apps by integrating planning, payment, and communication.</li>
-                    <li><strong>Empowered Community:</strong> Our platform is designed to empower users, fostering engagement and responding to data-driven demand.</li>
+                    <li>**Smart Cost-Sharing:** Makes high-quality experiences accessible and affordable for everyone.</li>
+                    <li>**Precision Matchmaking:** Connects you with highly relevant events and genuinely like-minded individuals.</li>
+                    <li>**Reliable Trust System:** Built-in ratings and verified users cultivate a secure and reliable community.</li>
+                    <li>**Unified Platform:** Eliminates the need for multiple apps by integrating planning, payment, and communication.</li>
+                    <li>**Empowered Community:** Our platform is designed to empower users, fostering engagement and responding to data-driven demand.</li>
                 </ul>
             </div>
         </div>
@@ -356,17 +335,17 @@
                 PaJoin.com is the ideal platform for individuals who are passionate about exploring, connecting, and enjoying new adventures without the burden of high costs or complex organization.
             </p>
             <div class="flex flex-wrap justify-center gap-8">
-                <div class="audience-card bg-sky-50 p-8 rounded-xl shadow-md flex flex-col items-center w-full sm:w-64 animate-fade-in-up" style="animation-delay: 0.1s;">
+                <div class="bg-sky-50 p-8 rounded-xl shadow-md flex flex-col items-center w-full sm:w-64 transition-all duration-300 ease-in-out hover:translate-y-[-8px] hover:shadow-lg animate-fade-in-up" style="animation-delay: 0.1s;">
                     <img src="Pro.jpg" alt="Young Professionals" class="rounded-full mb-5 border-4 border-sky-200">
                     <h3 class="text-2xl font-semibold text-gray-900 mb-2">Young Urban Professionals</h3>
                     <p class="text-gray-600 text-base leading-relaxed">Seeking vibrant social and affordable experiences to enrich their after-work hours and weekends.</p>
                 </div>
-                <div class="audience-card bg-sky-50 p-8 rounded-xl shadow-md flex flex-col items-center w-full sm:w-64 animate-fade-in-up" style="animation-delay: 0.2s;">
+                <div class="bg-sky-50 p-8 rounded-xl shadow-md flex flex-col items-center w-full sm:w-64 transition-all duration-300 ease-in-out hover:translate-y-[-8px] hover:shadow-lg animate-fade-in-up" style="animation-delay: 0.2s;">
                     <img src="Stu.jpg" alt="Students" class="rounded-full mb-5 border-4 border-sky-200">
                     <h3 class="text-2xl font-semibold text-gray-900 mb-2">Students</h3>
                     <p class="text-gray-600 text-base leading-relaxed">Looking for budget-friendly ways to socialize, explore new interests, and create lasting memories with friends.</p>
                 </div>
-                <div class="audience-card bg-sky-50 p-8 rounded-xl shadow-md flex flex-col items-center w-full sm:w-64 animate-fade-in-up" style="animation-delay: 0.3s;">
+                <div class="bg-sky-50 p-8 rounded-xl shadow-md flex flex-col items-center w-full sm:w-64 transition-all duration-300 ease-in-out hover:translate-y-[-8px] hover:shadow-lg animate-fade-in-up" style="animation-delay: 0.3s;">
                     <img src="Trav.jpg" alt="Travel Enthusiasts" class="rounded-full mb-5 border-4 border-sky-200">
                     <h3 class="text-2xl font-semibold text-gray-900 mb-2">Travel & Sports Enthusiasts</h3>
                     <p class="text-gray-600 text-base leading-relaxed">Passionate about active pursuits and eager to share costs and experiences with a dynamic community.</p>
@@ -375,7 +354,7 @@
         </div>
     </section>
 
-    <section class="bg-gradient-to-r from-amber-500 to-sky-400 text-black py-20 px-6 md:px-12 text-center rounded-t-3xl shadow-2xl">
+    <section class="bg-gradient-to-r from-amber-500 to-sky-400 text-black py-20 px-6 md:px-12 text-center shadow-2xl">
         <h2 class="text-3xl md:text-5xl font-bold mb-6">Ready to Join the Fun?</h2>
         <p class="text-lg md:text-xl mb-10 max-w-4xl mx-auto opacity-90">
             Download the PaJoin.com app today and embark on a journey of shared experiences and unforgettable moments!
@@ -385,7 +364,7 @@
         </a>
     </section>
 
-    <footer id="contact" class="bg-gray-900 text-gray-300 py-12 px-6 md:px-12 rounded-t-xl">
+    <footer id="contact" class="bg-gray-900 text-gray-300 py-12 px-6 md:px-12">
         <div class="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-10 text-center md:text-left">
             <div>
                 <h3 class="text-2xl font-bold text-white mb-5">PaJoin.com</h3>
@@ -429,7 +408,7 @@
             <form id="loginForm" class="space-y-4">
                 <div>
                     <label for="email" class="block text-sm font-medium text-gray-700 mb-1">Email Address</label>
-                    <input type="email" id="email" class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:ring-sky-500 focus:border-sky-500 sm:text-base" placeholder="Enter 'test'">
+                    <input type="email" id="email" class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:ring-sky-500 focus:border-sky-500 sm:text-base" placeholder="Enter 'test@test.com'">
                 </div>
                 <div>
                     <label for="password" class="block text-sm font-medium text-gray-700 mb-1">Password</label>
@@ -451,179 +430,172 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            // Desktop buttons
-            const loginBtnDesktop = document.getElementById('loginBtnDesktop');
-            const logoutBtnDesktop = document.getElementById('logoutBtnDesktop');
-
-            // Mobile buttons
-            const mobileMenuBtn = document.getElementById('mobileMenuBtn');
-            const mobileMenu = document.getElementById('mobileMenu');
-            const loginBtnMobile = document.getElementById('loginBtnMobile');
-            const logoutBtnMobile = document.getElementById('logoutBtnMobile');
-
-            // Modal elements
-            const loginModal = document.getElementById('loginModal');
-            const closeModalBtn = document.getElementById('closeModalBtn');
-            const loginForm = document.getElementById('loginForm');
-            const messageBox = document.getElementById('messageBox');
-
-            let isLoggedIn = false; // Simple client-side state
-
-            // Function to display messages (success/error)
-            function showMessage(message, type = 'success') {
-                messageBox.textContent = message;
-                messageBox.className = `message-box show ${type}`; // Reset classes and add new ones
-                setTimeout(() => {
-                    messageBox.classList.remove('show');
-                }, 3000); // Hide after 3 seconds
-            }
-
-            // Function to update login/logout button visibility for both desktop and mobile
-            function updateAuthButtons() {
-                if (isLoggedIn) {
-                    loginBtnDesktop.classList.add('hidden');
-                    logoutBtnDesktop.classList.remove('hidden');
-                    loginBtnMobile.classList.add('hidden');
-                    logoutBtnMobile.classList.remove('hidden');
-                } else {
-                    loginBtnDesktop.classList.remove('hidden');
-                    logoutBtnDesktop.classList.add('hidden');
-                    loginBtnMobile.classList.remove('hidden');
-                    logoutBtnMobile.classList.add('hidden');
-                }
-            }
-
-            // Toggle mobile menu visibility
-            mobileMenuBtn.addEventListener('click', () => {
-                mobileMenu.classList.toggle('active');
-            });
-
-            // Function to close mobile menu, useful for navigation links
-            window.closeMobileMenu = function() {
-                mobileMenu.classList.remove('active');
+            // Element references
+            const elements = {
+                // Auth buttons
+                loginBtnDesktop: document.getElementById('loginBtnDesktop'),
+                logoutBtnDesktop: document.getElementById('logoutBtnDesktop'),
+                loginBtnMobile: document.getElementById('loginBtnMobile'),
+                logoutBtnMobile: document.getElementById('logoutBtnMobile'),
+                // Mobile menu
+                mobileMenuBtn: document.getElementById('mobileMenuBtn'),
+                mobileMenu: document.getElementById('mobileMenu'),
+                mobileNavLinks: document.querySelectorAll('[data-nav-link]'),
+                // Login Modal
+                loginModal: document.getElementById('loginModal'),
+                closeModalBtn: document.getElementById('closeModalBtn'),
+                loginForm: document.getElementById('loginForm'),
+                emailInput: document.getElementById('email'),
+                passwordInput: document.getElementById('password'),
+                messageBox: document.getElementById('messageBox'),
+                // Carousel
+                appCarouselImages: document.querySelectorAll('.app-carousel-image')
             };
 
-            // Show login modal from desktop button
-            loginBtnDesktop.addEventListener('click', () => {
-                loginModal.classList.add('show');
-            });
+            let isLoggedIn = false; // Client-side authentication state
+            let currentCarouselImageIndex = 0;
+            let carouselInterval;
 
-            // Show login modal from mobile button
-            loginBtnMobile.addEventListener('click', () => {
-                loginModal.classList.add('show');
-                closeMobileMenu(); // Close mobile menu when modal opens
-            });
+            /**
+             * Displays a transient message to the user.
+             * @param {string} message - The message to display.
+             * @param {'success' | 'error'} type - The type of message (determines styling).
+             */
+            function showMessage(message, type = 'success') {
+                elements.messageBox.textContent = message;
+                // Apply Tailwind classes directly for styling
+                elements.messageBox.className = `message-box show ${
+                    type === 'success' ? 'bg-emerald-100 text-emerald-800 border border-emerald-400' :
+                    'bg-red-100 text-red-800 border border-red-400'
+                }`;
+                setTimeout(() => {
+                    elements.messageBox.classList.remove('show');
+                }, 3000);
+            }
 
+            /** Updates visibility of login/logout buttons based on authentication state. */
+            function updateAuthButtons() {
+                const showLogin = !isLoggedIn;
+                const showLogout = isLoggedIn;
 
-            // Hide login modal
-            closeModalBtn.addEventListener('click', () => {
-                loginModal.classList.remove('show');
-            });
+                elements.loginBtnDesktop.classList.toggle('hidden', !showLogin);
+                elements.logoutBtnDesktop.classList.toggle('hidden', !showLogout);
+                elements.loginBtnMobile.classList.toggle('hidden', !showLogin);
+                elements.logoutBtnMobile.classList.toggle('hidden', !showLogout);
+            }
 
-            // Close modal if clicked outside content
-            loginModal.addEventListener('click', (e) => {
-                if (e.target === loginModal) {
-                    loginModal.classList.remove('show');
-                }
-            });
+            /** Opens the login modal. */
+            function openLoginModal() {
+                elements.loginModal.classList.add('show');
+                // Clear inputs when opening modal
+                elements.emailInput.value = '';
+                elements.passwordInput.value = '';
+            }
 
-            // Handle login form submission
-            loginForm.addEventListener('submit', (e) => {
-                e.preventDefault(); // Prevent default form submission
+            /** Closes the login modal. */
+            function closeLoginModal() {
+                elements.loginModal.classList.remove('show');
+            }
 
-                const email = document.getElementById('email').value.trim();
-                const password = document.getElementById('password').value.trim();
+            /** Toggles the mobile navigation menu. */
+            function toggleMobileMenu() {
+                elements.mobileMenu.classList.toggle('active');
+            }
 
-                // Specific login credentials: username 'test', password 'test'
+            /** Handles login form submission. */
+            function handleLogin(event) {
+                event.preventDefault(); // Prevent default form submission
+
+                const email = elements.emailInput.value.trim();
+                const password = elements.passwordInput.value.trim();
+
+                // Simple client-side validation and 'test' credentials
                 if (email === 'test@test.com' && password === 'test') {
                     isLoggedIn = true;
-                    showMessage('Login successful! Redirecting to user homepage...', 'success');
-                    loginModal.classList.remove('show'); // Hide modal on success
-                    updateAuthButtons(); // Update buttons
-                    // Clear form fields
-                    document.getElementById('email').value = '';
-                    document.getElementById('password').value = '';
+                    showMessage('Login successful! Redirecting...', 'success');
+                    closeLoginModal();
+                    updateAuthButtons();
 
-                    // Redirect to the user homepage
-                    window.location.href = 'userhomepage.html';
-
-                } else if (email === '' || password === '') {
-                    showMessage('Please enter both email and password.', 'error');
+                    // Simulate redirection to user homepage
+                    // In a real app, this would be a server-side redirect or client-side router
+                    setTimeout(() => {
+                        window.location.href = 'userhomepage.html';
+                    }, 500); // Give time for message to display
                 } else {
                     showMessage('Invalid email or password. Please try again.', 'error');
                 }
-            });
-
-            // Handle logout from desktop button
-            logoutBtnDesktop.addEventListener('click', () => {
-                isLoggedIn = false;
-                showMessage('You have been logged out.', 'success');
-                updateAuthButtons(); // Update buttons
-            });
-
-            // Handle logout from mobile button
-            logoutBtnMobile.addEventListener('click', () => {
-                isLoggedIn = false;
-                showMessage('You have been logged out.', 'success');
-                updateAuthButtons(); // Update buttons
-                closeMobileMenu(); // Close mobile menu after logout
-            });
-
-
-            // Initial button state on page load
-            updateAuthButtons();
-
-
-            // --- Image Carousel Logic ---
-            const howItWorksImages = [
-                document.getElementById('howItWorksImage1'),
-                document.getElementById('howItWorksImage2'),
-                document.getElementById('howItWorksImage3'),
-                document.getElementById('howItWorksImage4'),
-                document.getElementById('howItWorksImage5') // Added the fifth image
-            ];
-            let currentImageIndex = 0;
-
-            // Initialize: ensure first image is visible and in correct position
-            howItWorksImages[0].classList.remove('hidden');
-            howItWorksImages[0].classList.add('slide-in-right'); // Ensure it starts in place
-
-            function showNextHowItWorksImage() {
-                const prevImageIndex = currentImageIndex;
-                currentImageIndex = (currentImageIndex + 1) % howItWorksImages.length;
-
-                const currentImage = howItWorksImages[prevImageIndex];
-                const nextImage = howItWorksImages[currentImageIndex];
-
-                // 1. Prepare the next image to slide in from the right
-                nextImage.classList.add('slide-in-from-right');
-                nextImage.classList.remove('hidden'); // Make it visible for animation
-
-                // Use a short delay to allow the browser to render the initial `slide-in-from-right` state
-                // before applying the transition to `slide-in-right`.
-                setTimeout(() => {
-                    // 2. Slide the current image out to the left
-                    currentImage.classList.add('slide-out-left');
-                    currentImage.classList.remove('slide-in-right'); // Remove the current active state
-
-                    // 3. Slide the next image into view
-                    nextImage.classList.remove('slide-in-from-right');
-                    nextImage.classList.add('slide-in-right');
-                }, 10); // A small delay is often needed for the animation to register properly
-
-                // Clean up classes after the transition is complete
-                // This setTimeout needs to match the CSS transition duration
-                setTimeout(() => {
-                    currentImage.classList.add('hidden'); // Hide the old image
-                    currentImage.classList.remove('slide-out-left'); // Clean up old image class
-                    // Crucially, reset the old image's transform for its next turn
-                    currentImage.classList.remove('slide-in-from-right'); // Ensure it's not stuck off-screen if it was the last one to slide in.
-                }, 700); // This matches the CSS transition duration (700ms)
             }
 
-            // Start the image rotation after the page loads
-            setInterval(showNextHowItWorksImage, 3000); // Change image every 3 seconds (adjust as needed)
-            // --- End Image Carousel Logic ---
+            /** Handles logout action. */
+            function handleLogout() {
+                isLoggedIn = false;
+                showMessage('You have been logged out.', 'success');
+                updateAuthButtons();
+                toggleMobileMenu(); // Close mobile menu if open
+            }
+
+            /** Manages the automatic image carousel. */
+            function startCarousel() {
+                carouselInterval = setInterval(() => {
+                    const prevImage = elements.appCarouselImages[currentCarouselImageIndex];
+                    currentCarouselImageIndex = (currentCarouselImageIndex + 1) % elements.appCarouselImages.length;
+                    const nextImage = elements.appCarouselImages[currentCarouselImageIndex];
+
+                    // 1. Prepare next image to slide in
+                    nextImage.classList.add('slide-in-from-right');
+                    nextImage.classList.remove('hidden');
+
+                    // Allow a tiny reflow for the `slide-in-from-right` to take effect before transition
+                    requestAnimationFrame(() => {
+                        requestAnimationFrame(() => {
+                            // 2. Slide current image out, next image in
+                            prevImage.classList.add('slide-out-left');
+                            prevImage.classList.remove('slide-in-right');
+
+                            nextImage.classList.remove('slide-in-from-right');
+                            nextImage.classList.add('slide-in-right');
+                        });
+                    });
+
+                    // Clean up classes after transition completes
+                    setTimeout(() => {
+                        prevImage.classList.add('hidden');
+                        prevImage.classList.remove('slide-out-left');
+                        // Reset prevImage for its next appearance
+                        prevImage.classList.remove('slide-in-right');
+                        prevImage.classList.add('slide-in-from-right'); // Prepare it to slide in from right next time
+                    }, 700); // Matches CSS transition duration
+                }, 3000); // Change image every 3 seconds
+            }
+
+            // --- Event Listeners ---
+            elements.loginBtnDesktop.addEventListener('click', openLoginModal);
+            elements.loginBtnMobile.addEventListener('click', () => {
+                openLoginModal();
+                toggleMobileMenu(); // Close mobile menu when opening modal
+            });
+            elements.logoutBtnDesktop.addEventListener('click', handleLogout);
+            elements.logoutBtnMobile.addEventListener('click', handleLogout);
+            elements.closeModalBtn.addEventListener('click', closeLoginModal);
+            elements.loginModal.addEventListener('click', (e) => {
+                if (e.target === elements.loginModal) closeLoginModal();
+            });
+            elements.loginForm.addEventListener('submit', handleLogin);
+            elements.mobileMenuBtn.addEventListener('click', toggleMobileMenu);
+
+            // Close mobile menu when a navigation link is clicked
+            elements.mobileNavLinks.forEach(link => {
+                link.addEventListener('click', toggleMobileMenu);
+            });
+
+            // Initial setup
+            updateAuthButtons();
+            // Initialize carousel: ensure the first image is correctly positioned
+            if (elements.appCarouselImages.length > 0) {
+                elements.appCarouselImages[0].classList.remove('hidden');
+                elements.appCarouselImages[0].classList.add('slide-in-right');
+                startCarousel(); // Start auto-rotation
+            }
         });
     </script>
 </body>
